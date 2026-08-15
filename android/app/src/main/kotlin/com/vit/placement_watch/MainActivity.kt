@@ -1,4 +1,4 @@
-package com.azim.placement_watch
+package com.vit.placement_watch
 
 import io.flutter.embedding.android.FlutterActivity
 

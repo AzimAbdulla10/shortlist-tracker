@@ -1,7 +1,7 @@
 class AppConstants {
   // Gmail query constants
-  static const String defaultCdcSender = 'vitianscdc2027@vitstudent.ac.in';
-  static const String defaultPlacementId = 'I1F1A6M5';
+  static const String defaultCdcSender = 'cdc_sender@example.com';
+  static const String defaultPlacementId = 'YOUR_PLACEMENT_ID';
 
   // Secure Storage keys
   static const String keyPlacementId = 'placement_id';

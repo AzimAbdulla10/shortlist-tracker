@@ -14,7 +14,7 @@ import 'core/theme/theme.dart';
 import 'presentation/screens/main_navigation_shell.dart';
 
 // Name of background task
-const String backgroundSyncTask = "com.azim.placement_watch.background_sync";
+const String backgroundSyncTask = "com.vit.placement_watch.background_sync";
 
 // Background callback dispatcher
 @pragma('vm:entry-point')

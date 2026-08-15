@@ -103,25 +103,31 @@ class LoginScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                // Beautiful Logo / Icon
+                 // Beautiful Logo / Icon
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: AppTheme.primaryNeon.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.3), width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppTheme.primaryNeon.withOpacity(0.15),
+                          blurRadius: 20,
+                          spreadRadius: 2,
+                        ),
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.radar_rounded,
-                      size: 72,
-                      color: AppTheme.primaryNeon,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: Image.asset(
+                        'assets/app_icon.png',
+                        height: 110,
+                        width: 110,
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  "Placement Watch",
+                  "Ptracker",
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
                     fontWeight: FontWeight.bold,

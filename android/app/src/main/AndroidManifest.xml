@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
-        android:label="placement_watch"
+        android:label="Ptracker"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/yes">
         <activity
             android:name=".MainActivity"
             android:exported="true"

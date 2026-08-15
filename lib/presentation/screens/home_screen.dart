@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Placement Watch"),
+        title: const Text("Ptracker"),
         actions: [
           IconButton(
             icon: provider.isSyncing

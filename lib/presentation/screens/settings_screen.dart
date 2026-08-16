@@ -102,7 +102,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.account_circle, size: 40, color: AppTheme.accentTeal),
+                      ClipOval(
+                        child: authService.currentUser?.photoUrl != null
+                            ? Image.network(
+                                authService.currentUser!.photoUrl!,
+                                width: 44,
+                                height: 44,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      width: 44,
+                                      height: 44,
+                                      color: AppTheme.accentTeal.withOpacity(0.08),
+                                      child: const Icon(Icons.person, color: AppTheme.accentTeal),
+                                    ),
+                              )
+                            : Container(
+                                width: 44,
+                                height: 44,
+                                color: AppTheme.accentTeal.withOpacity(0.08),
+                                child: const Icon(Icons.person, color: AppTheme.accentTeal),
+                              ),
+                      ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(

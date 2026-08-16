@@ -21,6 +21,14 @@ class PlacementProvider extends ChangeNotifier {
   DateTime? get lastSyncTime => _lastSyncTime;
   String? get errorMessage => _errorMessage;
 
+  int _currentTabIndex = 0;
+  int get currentTabIndex => _currentTabIndex;
+
+  void setTabIndex(int index) {
+    _currentTabIndex = index;
+    notifyListeners();
+  }
+
   PlacementProvider(this._authService) {
     // Load local history initially
     loadHistory();

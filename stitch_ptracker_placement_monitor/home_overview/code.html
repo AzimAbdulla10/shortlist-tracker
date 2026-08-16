@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ptracker - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Hanken+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#00dfc4",
+                      "on-surface": "#e2e2e8",
+                      "surface-dim": "#111318",
+                      "on-secondary": "#462a00",
+                      "tertiary": "#e8e8ea",
+                      "background": "#111318",
+                      "secondary-fixed": "#ffddb7",
+                      "primary-fixed-dim": "#00dfc4",
+                      "outline-variant": "#3b4a46",
+                      "on-primary-fixed-variant": "#005046",
+                      "on-surface-variant": "#b9cac5",
+                      "surface-container-highest": "#333539",
+                      "on-secondary-fixed": "#2a1700",
+                      "surface-variant": "#333539",
+                      "tertiary-fixed": "#e2e2e4",
+                      "surface-container-low": "#1a1c20",
+                      "primary": "#70ffe5",
+                      "inverse-on-surface": "#2f3035",
+                      "inverse-surface": "#e2e2e8",
+                      "on-tertiary-fixed-variant": "#454749",
+                      "on-tertiary-fixed": "#1a1c1d",
+                      "outline": "#84948f",
+                      "error-container": "#93000a",
+                      "on-secondary-container": "#684100",
+                      "inverse-primary": "#006b5d",
+                      "surface-container": "#1e2024",
+                      "on-background": "#e2e2e8",
+                      "on-tertiary-container": "#555658",
+                      "tertiary-container": "#cbccce",
+                      "on-primary": "#00372f",
+                      "secondary": "#ffcb8d",
+                      "surface-container-lowest": "#0c0e12",
+                      "primary-fixed": "#41fcdf",
+                      "on-tertiary": "#2f3132",
+                      "error": "#ffb4ab",
+                      "secondary-container": "#ffa504",
+                      "surface-bright": "#37393e",
+                      "surface": "#111318",
+                      "surface-container-high": "#282a2e",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "primary-container": "#00e5c9",
+                      "on-secondary-fixed-variant": "#653e00",
+                      "tertiary-fixed-dim": "#c6c6c8",
+                      "on-primary-fixed": "#00201b",
+                      "on-primary-container": "#006155",
+                      "secondary-fixed-dim": "#ffb95c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-gap": "16px",
+                      "gutter": "16px",
+                      "container-padding": "24px",
+                      "section-margin": "40px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "title-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "title-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #090B0F; /* Deep Space Obsidian */
+            color: #e2e2e8;
+        }
+        .surface-card {
+            background-color: #1B202D;
+            border: 1px solid #222634;
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(112, 255, 229, 0.2);
+        }
+      </style>
+</head>
+<body class="font-body-md min-h-screen pb-24 md:pb-0 flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background docked full-width top-0 w-full z-40 relative md:hidden">
+<div class="flex justify-between items-center w-full px-container-padding py-4">
+<button class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant hover:opacity-80 transition-opacity">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPhzx44O2YqR2pW6yBP7SCc1n-m46XnXIAGiKKkqhIgq3u5BKwHreAyJy1qLA90zV_3n_H0K0ED_GeinjAdcjBm_r8XLns88pTFvbxwLWwnmSGIH8OzRA9y2CpkKPmJDIzp-NbpUVGyc_Wg0Nzu-C0YyT5usF54l-iiW-FTUs1asmyMGVTGSRgYXzsNbzl38BB2zipeVR6fRTQE7ftOiQw82xtPxSgwJQg-QUvLFzwNwm_iXHZKr-4"/>
+</button>
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-extrabold text-on-surface">Ptracker</h1>
+<button class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+</button>
+</div>
+</header>
+<!-- Desktop Nav (Hidden on Mobile) -->
+<header class="hidden md:flex bg-background w-full max-w-[1280px] mx-auto justify-between items-center px-container-padding py-6 border-b border-surface-container">
+<h1 class="text-headline-lg font-headline-lg font-extrabold text-on-surface">Ptracker</h1>
+<nav class="flex gap-8">
+<a class="text-primary font-title-md text-title-md border-b-2 border-primary pb-1" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" href="#">Shortlist</a>
+<a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" href="#">Applications</a>
+<a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" href="#">Events</a>
+<a class="text-on-surface-variant hover:text-on-surface font-title-md text-title-md transition-colors" href="#">Profile</a>
+</nav>
+<button class="w-12 h-12 rounded-full overflow-hidden border border-outline-variant hover:opacity-80 transition-opacity">
+<img alt="User profile photo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB20OCBCUwYh5u_iY6uj659falvn61wnf-hoXcy9IamGLOwDbMbPx7z_vo8kopfiE36yfpaIvB2CVTXNyGiuMWiBQvxqxb52I9iH982shlJAcEyGIwkaEEBOIVJDkeIZr-nRyJNhlOfJYRm2mr3uMC1zXqaO5-aVvk5lEer8trLL08EHT8FuYf25D7Ii95-m5Yvp2nU-4bVqPWnSN9MVJBSg0fOh-O_XB4Tr0fNYK5CwdANihTtdu3E"/>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="w-full max-w-[1280px] px-gutter md:px-container-padding py-section-margin flex-1 flex flex-col gap-12">
+<!-- Dashboard Progress Gauge Area -->
+<section class="flex flex-col items-center justify-center pt-8 md:pt-16">
+<div class="relative w-64 h-64 md:w-80 md:h-80 rounded-full flex flex-col items-center justify-center neon-glow">
+<!-- Outer Ring (Simulated Gauge) -->
+<svg class="absolute inset-0 w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="#222634" stroke-width="2"></circle>
+<circle class="transition-all duration-1000 ease-out" cx="50" cy="50" fill="none" r="45" stroke="#70ffe5" stroke-dasharray="282.74" stroke-dashoffset="70" stroke-width="4"></circle>
+</svg>
+<!-- Inner Content -->
+<div class="z-10 flex flex-col items-center text-center">
+<span class="text-[64px] leading-none font-display-lg font-extrabold text-on-surface mb-2">12</span>
+<span class="font-label-sm text-label-sm text-primary tracking-widest uppercase mb-1">Monitoring Active</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Last Synced: 16:30</span>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section class="flex justify-center gap-4 md:gap-8 w-full max-w-md mx-auto">
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-colors text-on-surface">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sync Now</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-colors text-on-surface">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Filter</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-colors text-on-surface">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">History</span>
+</button>
+<button class="flex flex-col items-center gap-2 group">
+<div class="w-14 h-14 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center group-hover:border-primary group-hover:text-primary transition-colors text-on-surface">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Settings</span>
+</button>
+</section>
+<!-- Latest Shortlists -->
+<section class="w-full max-w-3xl mx-auto flex flex-col gap-4">
+<h2 class="font-title-md text-title-md text-on-surface px-2">Latest shortlists</h2>
+<!-- Glassmorphism Card -->
+<div class="surface-card rounded-[20px] p-container-padding flex flex-col md:flex-row gap-4 items-start md:items-center relative overflow-hidden group hover:border-outline transition-colors cursor-pointer">
+<!-- Subtle gradient overlay for depth -->
+<div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container-lowest opacity-50 pointer-events-none"></div>
+<div class="flex items-center gap-4 w-full md:w-auto md:flex-1 relative z-10">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center border border-outline-variant shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="table_chart">table_chart</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-title-md text-title-md text-on-surface">BlackRock</h3>
+<span class="font-label-sm text-label-sm px-2 py-1 rounded-md bg-secondary-container/20 text-secondary-container border border-secondary-container/30">ONLINE TEST</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">PPT and Online Test Shortlisting Schedule</p>
+</div>
+</div>
+<div class="relative z-10 md:text-right w-full md:w-auto mt-2 md:mt-0 pt-4 md:pt-0 border-t border-outline-variant md:border-t-0 md:border-l md:pl-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant block">Today, 11:17 AM</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-container dark:bg-surface-container docked full-width bottom-0 rounded-t-xl md:hidden fixed left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe shadow-lg backdrop-blur-xl">
+<button class="flex flex-col items-center justify-center bg-surface-container-highest text-primary rounded-full p-2 scale-95 transition-transform duration-150 group">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-label-sm font-label-sm mt-1 hidden group-hover:block">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span class="text-label-sm font-label-sm mt-1">Shortlist</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="text-label-sm font-label-sm mt-1">Applications</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="event">event</span>
+<span class="text-label-sm font-label-sm mt-1">Events</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm mt-1">Profile</span>
+</button>
+</nav>
+</body></html>

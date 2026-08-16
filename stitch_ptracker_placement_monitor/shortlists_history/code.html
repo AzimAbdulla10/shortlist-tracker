@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shortlists History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&amp;family=JetBrains+Mono:wght@500&amp;family=Hanken+Grotesk:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#00dfc4",
+                        "on-surface": "#e2e2e8",
+                        "surface-dim": "#111318",
+                        "on-secondary": "#462a00",
+                        "tertiary": "#e8e8ea",
+                        "background": "#111318",
+                        "secondary-fixed": "#ffddb7",
+                        "primary-fixed-dim": "#00dfc4",
+                        "outline-variant": "#3b4a46",
+                        "on-primary-fixed-variant": "#005046",
+                        "on-surface-variant": "#b9cac5",
+                        "surface-container-highest": "#333539",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-variant": "#333539",
+                        "tertiary-fixed": "#e2e2e4",
+                        "surface-container-low": "#1a1c20",
+                        "primary": "#70ffe5",
+                        "inverse-on-surface": "#2f3035",
+                        "inverse-surface": "#e2e2e8",
+                        "on-tertiary-fixed-variant": "#454749",
+                        "on-tertiary-fixed": "#1a1c1d",
+                        "outline": "#84948f",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#684100",
+                        "inverse-primary": "#006b5d",
+                        "surface-container": "#1e2024",
+                        "on-background": "#e2e2e8",
+                        "on-tertiary-container": "#555658",
+                        "tertiary-container": "#cbccce",
+                        "on-primary": "#00372f",
+                        "secondary": "#ffcb8d",
+                        "surface-container-lowest": "#0c0e12",
+                        "primary-fixed": "#41fcdf",
+                        "on-tertiary": "#2f3132",
+                        "error": "#ffb4ab",
+                        "secondary-container": "#ffa504",
+                        "surface-bright": "#37393e",
+                        "surface": "#111318",
+                        "surface-container-high": "#282a2e",
+                        "on-error": "#690005",
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#00e5c9",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "tertiary-fixed-dim": "#c6c6c8",
+                        "on-primary-fixed": "#00201b",
+                        "on-primary-container": "#006155",
+                        "secondary-fixed-dim": "#ffb95c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card-gap": "16px",
+                        "gutter": "16px",
+                        "container-padding": "24px",
+                        "section-margin": "40px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["JetBrains Mono"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "title-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #090B0F; /* Level 0 Obsidian */
+            color: #e2e2e8;
+        }
+        .glass-panel {
+            background-color: #1B202D; /* Level 1 Slate Grey */
+            border: 1px solid #222634;
+        }
+        .search-input:focus-within {
+            border-color: #00dfc4;
+            box-shadow: 0 0 0 2px rgba(0, 223, 196, 0.2);
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333539;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555658;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased min-h-screen flex flex-col pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-background dark:bg-background docked full-width top-0 sticky z-40">
+<div class="flex justify-between items-center w-full px-container-padding py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a user, clean modern lighting, centered composition, soft shadows, corporate aesthetic, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcGDQGXEnKmkYyBfzCk8xCI3ja_am1gugm_pnaCBXQCq2CR-KZKRbEGoXqCVCS9giKhh3wCTeLeUYL847gar_NlrGQTVqRqmWPyFAWibOB7PfdqGYoHd4NT0q-MLPrV3aBoqaos2irwCKjWhrS4C5Pi3MJgt1aa3SA17yZBjXbI14luBHdlHRBjNfUjpAKE2s2pwUaeXcymBgc0xFRJVZNHq5xSeLLUZfvLSTTABgjwK1kKaINXvRu"/>
+</div>
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-extrabold text-on-surface">Ptracker</h1>
+</div>
+<button aria-label="Sync" class="hover:opacity-80 transition-opacity p-2 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">sync</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col w-full max-w-3xl mx-auto px-4 md:px-container-padding py-6">
+<div class="mb-8">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile font-bold text-on-surface mb-6">Shortlists History</h2>
+<!-- Search Bar -->
+<div class="glass-panel rounded-full flex items-center px-4 py-3 search-input transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-on-surface w-full font-body-md placeholder-on-surface-variant outline-none" placeholder="Search company, subject..." type="text"/>
+</div>
+</div>
+<!-- History List -->
+<div class="flex flex-col gap-4">
+<!-- Card 1 -->
+<div class="glass-panel rounded-[20px] p-5 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(112,255,229,0.5)]"></div>
+<h3 class="text-title-md font-title-md text-on-surface">Goldman Sachs</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Aug 15</span>
+</div>
+<div class="ml-6">
+<p class="text-body-md font-body-md font-semibold text-inverse-surface mb-1">Final Shortlist - Summer Analyst 2024</p>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4">Congratulations on making it to the final shortlist. Please find attached the list of selected candidates for the upcoming technical round.</p>
+<div class="inline-flex items-center gap-2 bg-[#1A3B2B] text-[#70FFE5] px-3 py-1.5 rounded-lg border border-[#224A36]">
+<span class="material-symbols-outlined text-[18px]">table_chart</span>
+<span class="text-label-sm font-label-sm">shortlist_final.xlsx</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="glass-panel rounded-[20px] p-5 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-secondary-container shadow-[0_0_8px_rgba(255,165,4,0.3)]"></div>
+<h3 class="text-title-md font-title-md text-on-surface">McKinsey &amp; Company</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Aug 12</span>
+</div>
+<div class="ml-6">
+<p class="text-body-md font-body-md font-semibold text-inverse-surface mb-1">Initial Screening Results - Business Analyst</p>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4">The preliminary screening has been completed. The attached document contains the list of candidates moving forward to the PST phase.</p>
+<div class="inline-flex items-center gap-2 bg-[#1A3B2B] text-[#70FFE5] px-3 py-1.5 rounded-lg border border-[#224A36]">
+<span class="material-symbols-outlined text-[18px]">table_chart</span>
+<span class="text-label-sm font-label-sm">mck_screening_R1.xlsx</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="glass-panel rounded-[20px] p-5 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-surface-variant"></div>
+<h3 class="text-title-md font-title-md text-on-surface">Google</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Aug 05</span>
+</div>
+<div class="ml-6">
+<p class="text-body-md font-body-md font-semibold text-inverse-surface mb-1">Software Engineering Intern - Coding Assessment Roster</p>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4">Please review the attached roster for the upcoming online coding assessment. Ensure your testing environment is set up prior to the slot.</p>
+<div class="inline-flex items-center gap-2 bg-[#1A3B2B] text-[#70FFE5] px-3 py-1.5 rounded-lg border border-[#224A36]">
+<span class="material-symbols-outlined text-[18px]">table_chart</span>
+<span class="text-label-sm font-label-sm">swe_roster_v2.csv</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="glass-panel rounded-[20px] p-5 hover:bg-surface-container-high transition-colors cursor-pointer group">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-surface-variant"></div>
+<h3 class="text-title-md font-title-md text-on-surface">Atlassian</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Jul 28</span>
+</div>
+<div class="ml-6">
+<p class="text-body-md font-body-md font-semibold text-inverse-surface mb-1">Product Management - Round 1 Shortlist</p>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4">The following candidates have been shortlisted for the initial product sense interview based on their resume and portfolio submissions.</p>
+<div class="inline-flex items-center gap-2 bg-[#1A3B2B] text-[#70FFE5] px-3 py-1.5 rounded-lg border border-[#224A36]">
+<span class="material-symbols-outlined text-[18px]">table_chart</span>
+<span class="text-label-sm font-label-sm">pm_r1_list.xlsx</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container dark:bg-surface-container docked full-width bottom-0 rounded-t-xl shadow-lg fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe border-t-0">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-sm font-label-sm mt-1">Home</span>
+</a>
+<!-- Shortlist (Active) -->
+<a class="flex flex-col items-center justify-center bg-surface-container-highest text-primary rounded-full p-2 scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="text-label-sm font-label-sm mt-1">Shortlist</span>
+</a>
+<!-- Applications -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+<span class="text-label-sm font-label-sm mt-1">Applications</span>
+</a>
+<!-- Events -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="text-label-sm font-label-sm mt-1">Events</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-sm font-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

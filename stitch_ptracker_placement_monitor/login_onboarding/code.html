@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ptracker - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-tint": "#00dfc4",
+                      "on-surface": "#e2e2e8",
+                      "surface-dim": "#111318",
+                      "on-secondary": "#462a00",
+                      "tertiary": "#e8e8ea",
+                      "background": "#111318",
+                      "secondary-fixed": "#ffddb7",
+                      "primary-fixed-dim": "#00dfc4",
+                      "outline-variant": "#3b4a46",
+                      "on-primary-fixed-variant": "#005046",
+                      "on-surface-variant": "#b9cac5",
+                      "surface-container-highest": "#333539",
+                      "on-secondary-fixed": "#2a1700",
+                      "surface-variant": "#333539",
+                      "tertiary-fixed": "#e2e2e4",
+                      "surface-container-low": "#1a1c20",
+                      "primary": "#70ffe5",
+                      "inverse-on-surface": "#2f3035",
+                      "inverse-surface": "#e2e2e8",
+                      "on-tertiary-fixed-variant": "#454749",
+                      "on-tertiary-fixed": "#1a1c1d",
+                      "outline": "#84948f",
+                      "error-container": "#93000a",
+                      "on-secondary-container": "#684100",
+                      "inverse-primary": "#006b5d",
+                      "surface-container": "#1e2024",
+                      "on-background": "#e2e2e8",
+                      "on-tertiary-container": "#555658",
+                      "tertiary-container": "#cbccce",
+                      "on-primary": "#00372f",
+                      "secondary": "#ffcb8d",
+                      "surface-container-lowest": "#0c0e12",
+                      "primary-fixed": "#41fcdf",
+                      "on-tertiary": "#2f3132",
+                      "error": "#ffb4ab",
+                      "secondary-container": "#ffa504",
+                      "surface-bright": "#37393e",
+                      "surface": "#111318",
+                      "surface-container-high": "#282a2e",
+                      "on-error": "#690005",
+                      "on-error-container": "#ffdad6",
+                      "primary-container": "#00e5c9",
+                      "on-secondary-fixed-variant": "#653e00",
+                      "tertiary-fixed-dim": "#c6c6c8",
+                      "on-primary-fixed": "#00201b",
+                      "on-primary-container": "#006155",
+                      "secondary-fixed-dim": "#ffb95c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card-gap": "16px",
+                      "gutter": "16px",
+                      "container-padding": "24px",
+                      "section-margin": "40px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "title-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "JetBrains Mono"
+                      ],
+                      "body-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "display-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "title-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "26px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #090B0F;
+            color: #e2e2e8;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient glow effects */
+        .ambient-glow-top {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,223,196,0.15) 0%, rgba(9,11,15,0) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .ambient-glow-bottom {
+            position: absolute;
+            bottom: -150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0,223,196,0.1) 0%, rgba(9,11,15,0) 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content-layer {
+            z-index: 10;
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body class="antialiased font-body-md text-body-md">
+<div class="ambient-glow-top"></div>
+<div class="ambient-glow-bottom"></div>
+<div class="content-layer w-full max-w-md mx-auto h-full px-container-padding py-10 flex flex-col justify-between">
+<!-- Header & Logo Section -->
+<div class="flex-1 flex flex-col items-center justify-center space-y-8 mt-12">
+<!-- Logo Container with slight glassmorphism effect -->
+<div class="w-32 h-32 rounded-full p-4 flex items-center justify-center bg-[#1B202D] border border-[#222634] shadow-[0_0_40px_rgba(0,223,196,0.1)] relative group">
+<div class="absolute inset-0 rounded-full border border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+<img alt="Ptracker Logo" class="w-full h-full object-contain filter drop-shadow-md brightness-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApOh5Ag4QZ4_jdSspH2Np08WW2n-4VAfBcYxmeobs-9BJqDclVTyhziLcfp1tibJhE0PFVygudYmwMK1OQuAuL0duFBDoTT4SBsirxUhTUJCiAqiLknREP86rvfd_NLcv-j0FvZ9AFiHzjLC6NiM3AJDqnw9cjauIa13GbRD0FVlGSHauxzq30yoDtIDKoBVLnlrXVvXiCvPCB1x79P7AFS2fbzMFa4TY_Qr4d_wdDrxXrBnPb6dAk"/>
+</div>
+<!-- Titles -->
+<div class="text-center space-y-4 max-w-xs">
+<h1 class="font-display-lg text-display-lg text-on-surface tracking-tight">
+                    Ptracker
+                </h1>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                    Track VIT Placement Shortlist emails automatically. No spam, just updates.
+                </p>
+</div>
+</div>
+<!-- Action Section -->
+<div class="w-full space-y-6 pb-6">
+<button class="w-full h-[56px] rounded-[30px] bg-[#F5F5F7] text-[#090B0F] font-title-md text-title-md flex items-center justify-center space-x-3 hover:bg-white transition-colors duration-200 active:scale-[0.98]">
+<span class="material-symbols-outlined text-[24px]">login</span>
+<span>Sign in with VIT Account</span>
+</button>
+<p class="text-center font-label-sm text-label-sm text-on-surface-variant/60 max-w-[280px] mx-auto">
+                Requires read-only Gmail access to match placement IDs.
+            </p>
+</div>
+</div>
+</body></html>

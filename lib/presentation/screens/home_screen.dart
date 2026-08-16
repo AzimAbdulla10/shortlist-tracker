@@ -70,6 +70,34 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
+                // Horizontal quick actions (inspired by Revolut Business/Stitch Home Overview)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildQuickAction(
+                      context: context,
+                      icon: Icons.sync,
+                      label: "Sync Now",
+                      onTap: provider.isSyncing ? null : () => provider.syncData(),
+                    ),
+                    const SizedBox(width: 32),
+                    _buildQuickAction(
+                      context: context,
+                      icon: Icons.history,
+                      label: "History",
+                      onTap: () => provider.setTabIndex(1),
+                    ),
+                    const SizedBox(width: 32),
+                    _buildQuickAction(
+                      context: context,
+                      icon: Icons.settings_rounded,
+                      label: "Settings",
+                      onTap: () => provider.setTabIndex(2),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 32),
+
                 // Status Banner or Error message
                 if (provider.errorMessage != null) ...[
                   Container(
@@ -323,6 +351,46 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildQuickAction({
+    required BuildContext context,
+    required IconData icon,
+    required String label,
+    required VoidCallback? onTap,
+  }) {
+    final isEnabled = onTap != null;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: AppTheme.darkSurface,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppTheme.borderMuted, width: 1),
+            ),
+            child: Icon(
+              icon,
+              color: isEnabled ? AppTheme.textPrimary : AppTheme.textSecondary.withOpacity(0.5),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: isEnabled ? AppTheme.textSecondary : AppTheme.textSecondary.withOpacity(0.5),
+            ),
+          ),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/placement_provider.dart';
 import '../../core/theme/theme.dart';
 import 'home_screen.dart';
 import 'history_screen.dart';
@@ -14,8 +15,6 @@ class MainNavigationShell extends StatefulWidget {
 }
 
 class _MainNavigationShellState extends State<MainNavigationShell> {
-  int _currentIndex = 0;
-
   final List<Widget> _screens = [
     const HomeScreen(),
     const HistoryScreen(),
@@ -25,6 +24,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final provider = Provider.of<PlacementProvider>(context);
 
     // If not authenticated, show login page directly inside the shell or redirect
     if (!authService.isAuthenticated) {
@@ -33,7 +33,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
     return Scaffold(
       body: IndexedStack(
-        index: _currentIndex,
+        index: provider.currentTabIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
@@ -43,11 +43,9 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           ),
         ),
         child: NavigationBar(
-          selectedIndex: _currentIndex,
+          selectedIndex: provider.currentTabIndex,
           onDestinationSelected: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
+            provider.setTabIndex(index);
           },
           backgroundColor: AppTheme.darkSurface,
           indicatorColor: AppTheme.primaryNeon.withOpacity(0.2),

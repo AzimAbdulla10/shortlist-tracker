@@ -57,7 +57,7 @@ class DetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: AppTheme.darkSurface,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppTheme.borderMuted, width: 1),
                 ),
                 child: Column(
@@ -136,7 +136,7 @@ class DetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppTheme.darkSurface,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: AppTheme.borderMuted, width: 1),
                 ),
                 child: Text(
@@ -156,7 +156,7 @@ class DetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.primaryNeon.withOpacity(0.05),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.2), width: 1),
                   ),
                   child: const Row(

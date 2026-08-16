@@ -97,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.darkSurface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppTheme.borderMuted, width: 1),
                   ),
                   child: Row(
@@ -190,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppTheme.darkSurface,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(color: AppTheme.borderMuted, width: 1),
                   ),
                   child: const Column(
@@ -224,7 +224,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     foregroundColor: AppTheme.errorRed,
                     side: const BorderSide(color: AppTheme.errorRed),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),
                   icon: const Icon(Icons.power_settings_new),
                   label: const Text("Disconnect Gmail Account", style: TextStyle(fontWeight: FontWeight.bold)),

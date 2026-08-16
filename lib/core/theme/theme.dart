@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Vibrant HSL-equivalent Colors
-  static const Color darkBg = Color(0xFF0C0E14);
-  static const Color darkSurface = Color(0xFF161922);
-  static const Color darkCard = Color(0xFF1E2230);
+  // exact hex colors derived from UI screenshots
+  static const Color darkBg = Color(0xFF090B0F); // Very dark screen background
+  static const Color darkSurface = Color(0xFF131722); // Mid dark surface (inputs, list items)
+  static const Color darkCard = Color(0xFF1B202D); // Lighter dark card background
   
-  static const Color primaryNeon = Color(0xFF10B981); // Emerald green for success/shortlist
-  static const Color secondaryGold = Color(0xFFF59E0B); // Amber for updates/alerts
-  static const Color accentTeal = Color(0xFF06B6D4); // Cyber teal for metadata
-  static const Color errorRed = Color(0xFFEF4444); // Red for disconnects
+  static const Color primaryNeon = Color(0xFF00E5C9); // Active cyan/teal accent
+  static const Color secondaryGold = Color(0xFFFFA500); // Orange/Gold for tests
+  static const Color accentTeal = Color(0xFF00BFFF); // Bright blue/teal
+  static const Color errorRed = Color(0xFFFF453A); // Red warning color
   
-  static const Color textPrimary = Color(0xFFF3F4F6); // Crisp white-grey
-  static const Color textSecondary = Color(0xFF9CA3AF); // Muted grey
-  static const Color borderMuted = Color(0xFF2E3348); // Subtle borders for cards
+  static const Color textPrimary = Color(0xFFFFFFFF); // Clean white text
+  static const Color textSecondary = Color(0xFF8E9AA8); // Muted slate text
+  static const Color borderMuted = Color(0xFF222634); // Thin card borders
 
   static ThemeData get darkTheme {
     return ThemeData(
@@ -34,14 +34,14 @@ class AppTheme {
         color: darkCard,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           side: const BorderSide(color: borderMuted, width: 1),
         ),
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: textPrimary),
         headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: textPrimary),
-        titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: textPrimary),
+        titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: textPrimary),
         bodyLarge: TextStyle(fontSize: 16, color: textPrimary, height: 1.5),
         bodyMedium: TextStyle(fontSize: 14, color: textSecondary, height: 1.4),
         labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryNeon),
@@ -50,18 +50,26 @@ class AppTheme {
         backgroundColor: darkBg,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: textPrimary),
+        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textPrimary),
         iconTheme: IconThemeData(color: textPrimary),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryNeon,
-          foregroundColor: Colors.black,
+          backgroundColor: Colors.white, // Solid white background (like the 'Save' button in Screen 2)
+          foregroundColor: Colors.black, // Black text
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Pill button shape
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          elevation: 2,
-          shadowColor: primaryNeon.withOpacity(0.3),
+          elevation: 0,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.white, // Outlined white (like the 'Pause' button in Screen 3)
+          side: const BorderSide(color: Color(0xFF3A4257), width: 1.5),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Pill shape
+          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -74,21 +82,21 @@ class AppTheme {
         filled: true,
         fillColor: darkSurface,
         hintStyle: const TextStyle(color: textSecondary, fontSize: 14),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(30), // Highly rounded like the Screen 1 inputs
           borderSide: const BorderSide(color: borderMuted),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(30),
           borderSide: const BorderSide(color: borderMuted),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(30),
           borderSide: const BorderSide(color: primaryNeon, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(30),
           borderSide: const BorderSide(color: errorRed),
         ),
       ),

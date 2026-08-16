@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constants.dart';
@@ -47,13 +48,24 @@ class DetailScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header Card
+              // Company Header (Big & clean)
+              Text(
+                update.companyName,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // 2-Column Stats Grid (Inspired by Oura Screen 1 Stats Layout)
               Container(
-                width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: AppTheme.darkSurface,
@@ -61,79 +73,71 @@ class DetailScreen extends StatelessWidget {
                   border: Border.all(color: AppTheme.borderMuted, width: 1),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: statusColor.withOpacity(0.5)),
-                          ),
-                          child: Text(
+                        Expanded(
+                          child: _buildGridItem(
+                            context,
+                            "SELECTION ROUND",
                             update.status.toUpperCase(),
-                            style: TextStyle(
-                              color: statusColor,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            valueColor: statusColor,
                           ),
                         ),
-                        Text(
-                          _formatFullDate(update.dateReceived),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                fontSize: 13,
-                                color: AppTheme.textSecondary,
-                              ),
+                        Expanded(
+                          child: _buildGridItem(
+                            context,
+                            "DATE RECEIVED",
+                            _formatDate(update.dateReceived),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      update.companyName,
-                      style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.textPrimary,
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildGridItem(
+                            context,
+                            "SPREADSHEET",
+                            update.hasExcelAttachment ? "ATTACHED" : "NONE",
+                            valueColor: update.hasExcelAttachment ? AppTheme.primaryNeon : AppTheme.textSecondary,
                           ),
+                        ),
+                        Expanded(
+                          child: _buildGridItem(
+                            context,
+                            "MESSAGE ID",
+                            update.gmailMessageId.substring(0, min(12, update.gmailMessageId.length)) + "...",
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 28),
               
-              // Email Subject
-              Text(
-                "Subject",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              const SizedBox(height: 4),
+              // Email Subject Section
+              _buildSectionLabel("SUBJECT"),
+              const SizedBox(height: 8),
               Text(
                 update.emailSubject,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary,
+                  height: 1.4,
+                ),
               ),
-              const Divider(height: 32),
+              const SizedBox(height: 24),
 
-              // Email content snippet
-              Text(
-                "Email Snippet",
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
+              // Email snippet section
+              _buildSectionLabel("EMAIL SNIPPET"),
               const SizedBox(height: 8),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   color: AppTheme.darkSurface,
                   borderRadius: BorderRadius.circular(20),
@@ -141,23 +145,24 @@ class DetailScreen extends StatelessWidget {
                 ),
                 child: Text(
                   update.snippet,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 15,
-                        color: AppTheme.textPrimary.withOpacity(0.9),
-                      ),
+                  style: const TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontSize: 14,
+                    color: AppTheme.textSecondary,
+                    height: 1.5,
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
 
               // Excel indicator if applicable
               if (update.hasExcelAttachment) ...[
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
-                    color: AppTheme.primaryNeon.withOpacity(0.05),
+                    color: AppTheme.primaryNeon.withOpacity(0.04),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.2), width: 1),
+                    border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.15), width: 1),
                   ),
                   child: const Row(
                     children: [
@@ -175,11 +180,13 @@ class DetailScreen extends StatelessWidget {
                                 fontSize: 14,
                               ),
                             ),
+                            SizedBox(height: 2),
                             Text(
                               "VIT CDC attached a shortlist Excel sheet. Open the email in Gmail to view or download it.",
                               style: TextStyle(
                                 color: AppTheme.textSecondary,
                                 fontSize: 12,
+                                height: 1.3,
                               ),
                             ),
                           ],
@@ -208,6 +215,45 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildSectionLabel(String label) {
+    return Text(
+      label,
+      style: const TextStyle(
+        color: AppTheme.textSecondary,
+        fontSize: 10,
+        fontWeight: FontWeight.bold,
+        letterSpacing: 1.5,
+      ),
+    );
+  }
+
+  // Helper to build 2-column grid items (Inspired by Oura Screen 1)
+  Widget _buildGridItem(BuildContext context, String label, String value, {Color? valueColor}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: AppTheme.textSecondary,
+            fontSize: 9,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.0,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            color: valueColor ?? AppTheme.textPrimary,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
+  }
+
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'offered':
@@ -225,8 +271,8 @@ class DetailScreen extends StatelessWidget {
     }
   }
 
-  String _formatFullDate(DateTime date) {
+  String _formatDate(DateTime date) {
     final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return "${date.day} ${months[date.month - 1]} ${date.year} • ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+    return "${date.day} ${months[date.month - 1]} ${date.year}";
   }
 }

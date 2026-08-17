@@ -37,11 +37,11 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         children: _screens,
       ),
       bottomNavigationBar: NeoBox(
-        height: 76,
+        height: 80,
         borderWidth: 3.0,
         shadowOffset: 0.0,
         backgroundColor: AppTheme.surfaceWhite,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -64,7 +64,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           alignment: Alignment.center,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: isSelected
                 ? BoxDecoration(
                     color: AppTheme.accentYellow,

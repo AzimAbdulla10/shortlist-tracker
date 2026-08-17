@@ -5,15 +5,147 @@ import '../../core/theme/theme.dart';
 import '../../data/models/placement_update.dart';
 import 'detail_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  // Set of selected statuses for filtering
+  final Set<String> _selectedStatuses = {};
+
+  void _showFilterBottomSheet(BuildContext context, PlacementProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppTheme.bgCream,
+      shape: const Border(
+        top: BorderSide(color: AppTheme.borderBlack, width: 3.5),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            // Distinct list of available status labels in the database
+            final availableStatuses = ['offered', 'online test', 'interview', 'ppt', 'shortlisted'];
+            
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 28.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "FILTER BY STATUS",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          letterSpacing: 0.5,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setModalState(() {
+                            _selectedStatuses.clear();
+                          });
+                          setState(() {});
+                        },
+                        child: const Text(
+                          "RESET",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 11,
+                            color: AppTheme.accentRed,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: availableStatuses.map((status) {
+                      final isSelected = _selectedStatuses.contains(status);
+                      return GestureDetector(
+                        onTap: () {
+                          setModalState(() {
+                            if (isSelected) {
+                              _selectedStatuses.remove(status);
+                            } else {
+                              _selectedStatuses.add(status);
+                            }
+                          });
+                          setState(() {});
+                        },
+                        child: NeoBox(
+                          borderWidth: 2.0,
+                          shadowOffset: isSelected ? 2.5 : 0.0,
+                          backgroundColor: isSelected ? AppTheme.accentYellow : AppTheme.surfaceWhite,
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (isSelected) ...[
+                                const Icon(Icons.check, size: 12, color: AppTheme.textPrimary),
+                                const SizedBox(width: 6),
+                              ],
+                              Text(
+                                status.toUpperCase(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 10,
+                                  color: AppTheme.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: 28),
+                  NeoButton(
+                    backgroundColor: AppTheme.borderBlack,
+                    shadowOffset: 3.0,
+                    borderWidth: 0.0,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    onTap: () => Navigator.pop(context),
+                    child: const Center(
+                      child: Text(
+                        "APPLY FILTERS",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<PlacementProvider>(context);
 
-    // Latest Update
-    final PlacementUpdate? latest = provider.updates.isNotEmpty ? provider.updates.first : null;
+    // Apply active status filters
+    final filteredUpdates = _selectedStatuses.isEmpty
+        ? provider.updates
+        : provider.updates.where((update) => _selectedStatuses.contains(update.status.toLowerCase())).toList();
+
+    // Latest filtered updates
+    final PlacementUpdate? latest = filteredUpdates.isNotEmpty ? filteredUpdates.first : null;
 
     final lastSyncText = provider.lastSyncTime != null
         ? "${provider.lastSyncTime!.hour.toString().padLeft(2, '0')}:${provider.lastSyncTime!.minute.toString().padLeft(2, '0')}"
@@ -49,7 +181,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 // Bauhaus Square Tracker Box (Screen 2)
                 BauhausDashboard(
-                  totalShortlists: provider.updates.length,
+                  totalShortlists: filteredUpdates.length,
                   statusText: provider.isSyncing ? "Syncing..." : "STATUS: MONITORING ACTIVE",
                   subText: "Last Synced: $lastSyncText",
                   isSyncing: provider.isSyncing,
@@ -69,10 +201,9 @@ class HomeScreen extends StatelessWidget {
                     _buildQuickAction(
                       context: context,
                       icon: Icons.filter_list,
-                      label: "Filter",
-                      onTap: () {
-                        // Toggle filters (or open sheet)
-                      },
+                      label: _selectedStatuses.isEmpty ? "Filter" : "Filtered (${_selectedStatuses.length})",
+                      onTap: () => _showFilterBottomSheet(context, provider),
+                      isActive: _selectedStatuses.isNotEmpty,
                     ),
                     _buildQuickAction(
                       context: context,
@@ -117,9 +248,9 @@ class HomeScreen extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      "LATEST SHORTLISTS",
-                      style: TextStyle(
+                    Text(
+                      _selectedStatuses.isEmpty ? "LATEST SHORTLISTS" : "FILTERED RESULTS",
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w900,
                         letterSpacing: 0.5,
@@ -146,9 +277,9 @@ class HomeScreen extends StatelessWidget {
 
                 if (latest != null) ...[
                   _buildLatestUpdateCard(context, latest),
-                  if (provider.updates.length > 1) ...[
+                  if (filteredUpdates.length > 1) ...[
                     const SizedBox(height: 16),
-                    _buildLatestUpdateCard(context, provider.updates[1]),
+                    _buildLatestUpdateCard(context, filteredUpdates[1]),
                   ]
                 ] else
                   _buildEmptyState(context, provider),
@@ -301,7 +432,7 @@ class HomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           const Text(
-            "NO PLACEMENTS FOUND",
+            "NO MATCHING SHORTLISTS",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w900,
@@ -309,23 +440,38 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            "No placement shortlisting emails matching your details were found in your inbox.",
+          Text(
+            _selectedStatuses.isEmpty
+                ? "No placement shortlisting emails matching your details were found in your inbox."
+                : "No shortlists match the selected status filters.",
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12,
               color: AppTheme.textSecondary,
               height: 1.4,
             ),
           ),
           const SizedBox(height: 24),
-          NeoButton(
-            onTap: provider.isSyncing ? null : () => provider.syncData(),
-            child: const Text(
-              "SYNC NOW",
-              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
-            ),
-          )
+          if (_selectedStatuses.isNotEmpty)
+            NeoButton(
+              onTap: () {
+                setState(() {
+                  _selectedStatuses.clear();
+                });
+              },
+              child: const Text(
+                "CLEAR FILTERS",
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
+              ),
+            )
+          else
+            NeoButton(
+              onTap: provider.isSyncing ? null : () => provider.syncData(),
+              child: const Text(
+                "SYNC NOW",
+                style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
+              ),
+            )
         ],
       ),
     );
@@ -376,6 +522,7 @@ class HomeScreen extends StatelessWidget {
     required IconData icon,
     required String label,
     required VoidCallback? onTap,
+    bool isActive = false,
   }) {
     final isEnabled = onTap != null;
     return GestureDetector(
@@ -388,7 +535,7 @@ class HomeScreen extends StatelessWidget {
             height: 64,
             borderWidth: 2.5,
             shadowOffset: isEnabled ? 3.0 : 0.0,
-            backgroundColor: AppTheme.surfaceWhite,
+            backgroundColor: isActive ? AppTheme.accentYellow : AppTheme.surfaceWhite,
             child: Icon(
               icon,
               color: AppTheme.textPrimary,

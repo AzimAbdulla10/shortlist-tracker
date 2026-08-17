@@ -36,20 +36,19 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         index: provider.currentTabIndex,
         children: _screens,
       ),
-      bottomNavigationBar: SafeArea(
-        child: NeoBox(
-          borderWidth: 3.0,
-          shadowOffset: 0.0,
-          backgroundColor: AppTheme.surfaceWhite,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(provider, 0, Icons.dashboard_outlined, Icons.dashboard, "Overview"),
-              _buildNavItem(provider, 1, Icons.history_outlined, Icons.history, "History"),
-              _buildNavItem(provider, 2, Icons.settings_outlined, Icons.settings, "Settings"),
-            ],
-          ),
+      bottomNavigationBar: NeoBox(
+        height: 72,
+        borderWidth: 3.0,
+        shadowOffset: 0.0,
+        backgroundColor: AppTheme.surfaceWhite,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildNavItem(provider, 0, Icons.dashboard_outlined, Icons.dashboard, "Overview"),
+            _buildNavItem(provider, 1, Icons.history_outlined, Icons.history, "History"),
+            _buildNavItem(provider, 2, Icons.settings_outlined, Icons.settings, "Settings"),
+          ],
         ),
       ),
     );
@@ -65,7 +64,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           alignment: Alignment.center,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             decoration: isSelected
                 ? BoxDecoration(
                     color: AppTheme.accentYellow,
@@ -88,12 +87,12 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
                   size: 20,
                 ),
                 if (isSelected) ...[
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 4),
                   Text(
                     label.toUpperCase(),
                     style: const TextStyle(
                       fontWeight: FontWeight.w900,
-                      fontSize: 11,
+                      fontSize: 10,
                       letterSpacing: 0.5,
                       color: AppTheme.textPrimary,
                     ),

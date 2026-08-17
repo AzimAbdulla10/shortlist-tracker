@@ -36,19 +36,20 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
         index: provider.currentTabIndex,
         children: _screens,
       ),
-      bottomNavigationBar: NeoBox(
-        height: 80,
-        borderWidth: 3.0,
-        shadowOffset: 0.0,
-        backgroundColor: AppTheme.surfaceWhite,
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(provider, 0, Icons.dashboard_outlined, Icons.dashboard, "Overview"),
-            _buildNavItem(provider, 1, Icons.history_outlined, Icons.history, "History"),
-            _buildNavItem(provider, 2, Icons.settings_outlined, Icons.settings, "Settings"),
-          ],
+      bottomNavigationBar: SafeArea(
+        child: NeoBox(
+          borderWidth: 3.0,
+          shadowOffset: 0.0,
+          backgroundColor: AppTheme.surfaceWhite,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildNavItem(provider, 0, Icons.dashboard_outlined, Icons.dashboard, "Overview"),
+              _buildNavItem(provider, 1, Icons.history_outlined, Icons.history, "History"),
+              _buildNavItem(provider, 2, Icons.settings_outlined, Icons.settings, "Settings"),
+            ],
+          ),
         ),
       ),
     );

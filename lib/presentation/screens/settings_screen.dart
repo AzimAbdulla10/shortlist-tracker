@@ -14,32 +14,35 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _placementIdController;
-  late TextEditingController _cdcSenderController;
+  late TextEditingController _cdcEmailController;
   bool _isSaving = false;
+  
+  // Custom Settings checkboxes (Visual parity with Screen 5)
+  bool _verboseLogging = false;
+  bool _autoSync = true;
 
   @override
   void initState() {
     super.initState();
     _placementIdController = TextEditingController();
-    _cdcSenderController = TextEditingController();
-    _loadSettings();
+    _cdcEmailController = TextEditingController();
+    _loadConfig();
   }
 
-  Future<void> _loadSettings() async {
+  Future<void> _loadConfig() async {
     final authService = Provider.of<AuthService>(context, listen: false);
     final placementId = await authService.getPlacementId();
-    final cdcSender = await authService.getCdcSender();
-    
+    final cdcEmail = await authService.getCdcSender();
     setState(() {
       _placementIdController.text = placementId;
-      _cdcSenderController.text = cdcSender;
+      _cdcEmailController.text = cdcEmail;
     });
   }
 
   @override
   void dispose() {
     _placementIdController.dispose();
-    _cdcSenderController.dispose();
+    _cdcEmailController.dispose();
     super.dispose();
   }
 
@@ -50,26 +53,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _isSaving = true;
     });
 
-    final authService = Provider.of<AuthService>(context, listen: false);
-    final provider = Provider.of<PlacementProvider>(context, listen: false);
+    try {
+      final authService = Provider.of<AuthService>(context, listen: false);
+      final provider = Provider.of<PlacementProvider>(context, listen: false);
 
-    await authService.setPlacementId(_placementIdController.text.trim());
-    await authService.setCdcSender(_cdcSenderController.text.trim());
+      await authService.setPlacementId(_placementIdController.text.trim());
+      await authService.setCdcSender(_cdcEmailController.text.trim());
 
-    setState(() {
-      _isSaving = false;
-    });
+      // Force provider refresh with new criteria
+      await provider.loadHistory();
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Settings saved successfully!"),
-          backgroundColor: AppTheme.primaryNeon,
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Settings updated successfully!"),
+            backgroundColor: AppTheme.accentYellow,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed to save settings: $e"),
+            backgroundColor: AppTheme.accentRed,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _confirmDisconnect(BuildContext context, AuthService auth, PlacementProvider provider) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.surfaceWhite,
+        shape: Border.all(color: AppTheme.borderBlack, width: 3),
+        title: const Text("DISCONNECT ACCOUNT", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+        content: const Text(
+          "Are you sure you want to disconnect? This will clear your credentials and delete local sync history.",
+          style: TextStyle(fontSize: 13, height: 1.4),
         ),
-      );
-      
-      // Trigger sync with new settings
-      provider.syncData();
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("CANCEL", style: TextStyle(color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+          ),
+          NeoButton(
+            backgroundColor: AppTheme.accentRed,
+            shadowOffset: 0,
+            borderWidth: 2,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            onTap: () => Navigator.pop(context, true),
+            child: const Text("DISCONNECT", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await auth.logout();
+      await provider.loadHistory(); // Reset provider lists
     }
   }
 
@@ -79,82 +130,95 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final provider = Provider.of<PlacementProvider>(context);
 
     return Scaffold(
+      backgroundColor: AppTheme.bgCream,
       appBar: AppBar(
-        title: const Text("Settings"),
+        title: const Text("SETTINGS"),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Account Section
-                _buildSectionHeader("Connected Account"),
+                // Account Section (Screen 5 User Card)
+                _buildSectionHeader("CONNECTED ACCOUNT"),
                 const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppTheme.darkSurface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.borderMuted, width: 1),
-                  ),
-                  child: Row(
+                
+                NeoBox(
+                  borderWidth: 2.5,
+                  shadowOffset: 4.0,
+                  backgroundColor: AppTheme.surfaceWhite,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
                     children: [
-                      ClipOval(
-                        child: authService.currentUser?.photoUrl != null
-                            ? Image.network(
-                                authService.currentUser!.photoUrl!,
-                                width: 44,
-                                height: 44,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                      width: 44,
-                                      height: 44,
-                                      color: AppTheme.accentTeal.withOpacity(0.08),
-                                      child: const Icon(Icons.person, color: AppTheme.accentTeal),
-                                    ),
-                              )
-                            : Container(
-                                width: 44,
-                                height: 44,
-                                color: AppTheme.accentTeal.withOpacity(0.08),
-                                child: const Icon(Icons.person, color: AppTheme.accentTeal),
-                              ),
+                      // User photo in frame
+                      NeoBox(
+                        width: 90,
+                        height: 90,
+                        borderWidth: 2.0,
+                        shadowOffset: 0.0,
+                        padding: const EdgeInsets.all(2.0),
+                        child: ClipRect(
+                          child: authService.currentUser?.photoUrl != null
+                              ? Image.network(
+                                  authService.currentUser!.photoUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.person, size: 40, color: AppTheme.textSecondary),
+                                )
+                              : const Icon(Icons.person, size: 40, color: AppTheme.textSecondary),
+                        ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              authService.currentUser?.displayName ?? "VIT Student",
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                            ),
-                            Text(
-                              authService.currentUser?.email ?? "Not signed in",
-                              style: const TextStyle(color: AppTheme.textSecondary, fontSize: 14),
-                            ),
-                          ],
+                      const SizedBox(height: 16),
+                      Text(
+                        (authService.currentUser?.displayName ?? "Alex Mercer").toUpperCase(),
+                        style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: AppTheme.textPrimary, letterSpacing: 0.5),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        "Senior Tracking Engineer",
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        authService.currentUser?.email ?? "alex.mercer@ptracker.sys",
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      // Black Edit Profile button
+                      NeoButton(
+                        backgroundColor: AppTheme.borderBlack,
+                        shadowOffset: 0.0,
+                        borderWidth: 0.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        onTap: () {
+                          // Mock profile editing trigger
+                        },
+                        child: const Text(
+                          "EDIT PROFILE",
+                          style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 28),
 
-                // Query Settings Section
-                _buildSectionHeader("Criteria Configuration"),
+                // Criteria Configuration
+                _buildSectionHeader("SYSTEM CONFIG"),
                 const SizedBox(height: 8),
-                
+
                 // Placement ID Input
-                Text(
-                  "Placement / NEO ID",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                const Text(
+                  "PLACEMENT ID",
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: AppTheme.textPrimary, letterSpacing: 0.5),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
                   controller: _placementIdController,
                   validator: (value) {
@@ -163,20 +227,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                     return null;
                   },
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                   decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.badge, color: AppTheme.textPrimary),
                     hintText: "E.g. I1F1A6M5",
+                    filled: true,
+                    fillColor: AppTheme.surfaceWhite,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.accentRed, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.accentRed, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
 
-                // CDC Sender Input
-                Text(
-                  "CDC Sender Email",
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 14, fontWeight: FontWeight.w600),
+                // CDC Email Input
+                const Text(
+                  "CDC SENDER EMAIL",
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, color: AppTheme.textPrimary, letterSpacing: 0.5),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 TextFormField(
-                  controller: _cdcSenderController,
+                  controller: _cdcEmailController,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
                       return "CDC Email cannot be empty";
@@ -186,72 +270,131 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                     return null;
                   },
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
                   decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.alternate_email, color: AppTheme.textPrimary),
                     hintText: "E.g. vitianscdc2027@vitstudent.ac.in",
+                    filled: true,
+                    fillColor: AppTheme.surfaceWhite,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.accentRed, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: AppTheme.accentRed, width: 2.5),
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
 
-                ElevatedButton(
-                  onPressed: _isSaving ? null : _saveSettings,
-                  child: _isSaving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
-                        )
-                      : const Text("Save & Apply Settings"),
+                // Checkboxes
+                _buildCheckboxRow(
+                  label: "ENABLE VERBOSE LOGGING",
+                  value: _verboseLogging,
+                  onChanged: (val) => setState(() => _verboseLogging = val ?? false),
                 ),
-                const SizedBox(height: 32),
-
-                // Privacy / Information Section
-                _buildSectionHeader("Privacy & Security"),
                 const SizedBox(height: 8),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppTheme.darkSurface,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.borderMuted, width: 1),
+                _buildCheckboxRow(
+                  label: "AUTO-SYNC DATA",
+                  value: _autoSync,
+                  onChanged: (val) => setState(() => _autoSync = val ?? false),
+                ),
+                const SizedBox(height: 28),
+
+                // Save Action Button
+                NeoButton(
+                  backgroundColor: AppTheme.accentYellow,
+                  shadowOffset: 4.0,
+                  onTap: _isSaving ? null : _saveSettings,
+                  child: _isSaving
+                      ? const Center(
+                          child: SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.borderBlack),
+                          ),
+                        )
+                      : const Center(
+                          child: Text(
+                            "SAVE & APPLY",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w900,
+                              fontSize: 14,
+                              letterSpacing: 0.5,
+                              color: AppTheme.textPrimary,
+                            ),
+                          ),
+                        ),
+                ),
+                const SizedBox(height: 16),
+
+                // Disconnect Button
+                NeoButton(
+                  backgroundColor: AppTheme.surfaceWhite,
+                  shadowOffset: 3.0,
+                  onTap: () => _confirmDisconnect(context, authService, provider),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.power_settings_new, color: AppTheme.accentRed, size: 20),
+                      SizedBox(width: 8),
+                      Text(
+                        "DISCONNECT",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          letterSpacing: 0.5,
+                          color: AppTheme.accentRed,
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                const SizedBox(height: 28),
+
+                // Privacy/Information Notice Frame
+                _buildSectionHeader("PRIVACY & SECURITY NOTICE"),
+                const SizedBox(height: 8),
+                NeoBox(
+                  borderWidth: 2.5,
+                  shadowOffset: 0.0,
+                  backgroundColor: AppTheme.surfaceWhite,
+                  padding: const EdgeInsets.all(18),
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         "• Direct Communication",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: AppTheme.textPrimary),
                       ),
+                      SizedBox(height: 4),
                       Text(
-                        "Your tokens and email histories remain 100% on this device. No servers, databases, or third-parties receive your data.",
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                        "All configuration changes are logged and monitored. Placement IDs and CDC configurations directly affect data routing. Ensure compliance with internal security protocols before applying modifications.",
+                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 11, height: 1.4),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
                       Text(
                         "• Read-Only Permissions",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                        style: TextStyle(fontWeight: FontWeight.w900, fontSize: 12, color: AppTheme.textPrimary),
                       ),
+                      SizedBox(height: 4),
                       Text(
                         "The app requests Gmail Read-Only scope. It can never send, delete, or compose emails.",
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 13),
+                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 11, height: 1.4),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 32),
-
-                // Disconnect Button
-                OutlinedButton.icon(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppTheme.errorRed,
-                    side: const BorderSide(color: AppTheme.errorRed),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                  ),
-                  icon: const Icon(Icons.power_settings_new),
-                  label: const Text("Disconnect Gmail Account", style: TextStyle(fontWeight: FontWeight.bold)),
-                  onPressed: () => _confirmDisconnect(context, authService, provider),
-                ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 36),
               ],
             ),
           ),
@@ -262,49 +405,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(left: 4.0),
       child: Text(
-        title.toUpperCase(),
+        title,
         style: const TextStyle(
-          color: AppTheme.accentTeal,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
+          color: AppTheme.textSecondary,
+          fontSize: 11,
+          fontWeight: FontWeight.w900,
           letterSpacing: 1.0,
         ),
       ),
     );
   }
 
-  Future<void> _confirmDisconnect(
-    BuildContext context,
-    AuthService authService,
-    PlacementProvider provider,
-  ) async {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Disconnect Account?"),
-          content: const Text(
-            "This will sign you out of your Google account, delete the cached tokens, and erase all local placement histories from this app.",
+  Widget _buildCheckboxRow({
+    required String label,
+    required bool value,
+    required ValueChanged<bool?> onChanged,
+  }) {
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: Row(
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              color: value ? AppTheme.accentYellow : AppTheme.surfaceWhite,
+              border: Border.all(color: AppTheme.borderBlack, width: 2.5),
+            ),
+            child: value
+                ? const Icon(
+                    Icons.check,
+                    size: 14,
+                    color: AppTheme.borderBlack,
+                  )
+                : null,
           ),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.of(context).pop(),
+          const SizedBox(width: 12),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w900,
+              color: AppTheme.textPrimary,
+              letterSpacing: 0.5,
             ),
-            TextButton(
-              style: TextButton.styleFrom(foregroundColor: AppTheme.errorRed),
-              child: const Text("Disconnect & Erase"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await provider.clearAll();
-                await authService.logout();
-              },
-            ),
-          ],
-        );
-      },
+          ),
+        ],
+      ),
     );
   }
 }

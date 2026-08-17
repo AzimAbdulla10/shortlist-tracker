@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/constants.dart';
@@ -25,13 +24,7 @@ class DetailScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Failed to open email. Link: $urlStr"),
-            action: SnackBarAction(
-              label: 'Copy',
-              textColor: AppTheme.primaryNeon,
-              onPressed: () {
-                // Copy logic is optional, but snackbar informs user
-              },
-            ),
+            backgroundColor: AppTheme.accentRed,
           ),
         );
       }
@@ -40,11 +33,10 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color statusColor = _getStatusColor(update.status);
-
     return Scaffold(
+      backgroundColor: AppTheme.bgCream,
       appBar: AppBar(
-        title: const Text("Shortlist Details"),
+        title: const Text("PTRACKER"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -52,160 +44,144 @@ class DetailScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Company Header (Big & clean)
+              // "SHORTLIST DETAILS" Header
+              const Text(
+                "SHORTLIST DETAILS",
+                style: TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Company Header (Big & bold Bauhaus)
               Text(
-                update.companyName,
+                update.companyName.toUpperCase(),
                 style: const TextStyle(
                   fontSize: 32,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                   color: AppTheme.textPrimary,
                   letterSpacing: -0.5,
                 ),
               ),
               const SizedBox(height: 24),
 
-              // 2-Column Stats Grid (Inspired by Oura Screen 1 Stats Layout)
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppTheme.darkSurface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppTheme.borderMuted, width: 1),
-                ),
+              // Selection Round Row
+              _buildDetailRow(
+                context: context,
+                label: "SELECTION ROUND",
+                value: update.status.toUpperCase(),
+                icon: Icons.help_outline_rounded,
+                bgColor: AppTheme.surfaceWhite,
+              ),
+              const SizedBox(height: 12),
+
+              // Date Received Row
+              _buildDetailRow(
+                context: context,
+                label: "DATE RECEIVED",
+                value: _formatDate(update.dateReceived).toUpperCase(),
+                icon: Icons.calendar_today_outlined,
+                bgColor: AppTheme.surfaceWhite,
+              ),
+              const SizedBox(height: 12),
+
+              // Spreadsheet Row (Yellow if attached)
+              _buildDetailRow(
+                context: context,
+                label: "SPREADSHEET",
+                value: update.hasExcelAttachment ? "ATTACHED" : "NONE",
+                icon: Icons.table_chart_outlined,
+                bgColor: update.hasExcelAttachment ? AppTheme.accentYellow : AppTheme.surfaceWhite,
+              ),
+              const SizedBox(height: 28),
+
+              // COMMUNICATION DETAILS Box
+              _buildSectionLabel("COMMUNICATION DETAILS"),
+              const SizedBox(height: 8),
+
+              NeoBox(
+                borderWidth: 2.5,
+                shadowOffset: 4.0,
+                backgroundColor: AppTheme.surfaceWhite,
+                padding: const EdgeInsets.all(18),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildGridItem(
-                            context,
-                            "SELECTION ROUND",
-                            update.status.toUpperCase(),
-                            valueColor: statusColor,
-                          ),
-                        ),
-                        Expanded(
-                          child: _buildGridItem(
-                            context,
-                            "DATE RECEIVED",
-                            _formatDate(update.dateReceived),
-                          ),
-                        ),
-                      ],
+                    const Text(
+                      "SUBJECT",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.textSecondary,
+                        letterSpacing: 1.0,
+                      ),
                     ),
-                    const SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildGridItem(
-                            context,
-                            "SPREADSHEET",
-                            update.hasExcelAttachment ? "ATTACHED" : "NONE",
-                            valueColor: update.hasExcelAttachment ? AppTheme.primaryNeon : AppTheme.textSecondary,
-                          ),
+                    const SizedBox(height: 4),
+                    Text(
+                      update.emailSubject,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "EMAIL SNIPPET",
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w900,
+                        color: AppTheme.textSecondary,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppTheme.bgCream.withOpacity(0.4),
+                        border: Border.all(color: AppTheme.borderBlack, width: 1.5),
+                      ),
+                      child: Text(
+                        update.snippet,
+                        style: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          fontSize: 12,
+                          color: AppTheme.textSecondary,
+                          height: 1.4,
                         ),
-                        Expanded(
-                          child: _buildGridItem(
-                            context,
-                            "MESSAGE ID",
-                            update.gmailMessageId.substring(0, min(12, update.gmailMessageId.length)) + "...",
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 28),
-              
-              // Email Subject Section
-              _buildSectionLabel("SUBJECT"),
-              const SizedBox(height: 8),
-              Text(
-                update.emailSubject,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 36),
 
-              // Email snippet section
-              _buildSectionLabel("EMAIL SNIPPET"),
-              const SizedBox(height: 8),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(18),
-                decoration: BoxDecoration(
-                  color: AppTheme.darkSurface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppTheme.borderMuted, width: 1),
+              // Blue NeoButton "OPEN IN GMAIL"
+              NeoButton(
+                backgroundColor: AppTheme.accentBlue,
+                onTap: () => _openGmailMessage(context),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mail_outline, color: Colors.white, size: 22),
+                    SizedBox(width: 10),
+                    Text(
+                      "OPEN IN GMAIL",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 14,
+                        letterSpacing: 0.5,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-                child: Text(
-                  update.snippet,
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontSize: 14,
-                    color: AppTheme.textSecondary,
-                    height: 1.5,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Excel indicator if applicable
-              if (update.hasExcelAttachment) ...[
-                Container(
-                  padding: const EdgeInsets.all(18),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryNeon.withOpacity(0.04),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.15), width: 1),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.table_chart, color: AppTheme.primaryNeon, size: 24),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Spreadsheet Attached",
-                              style: TextStyle(
-                                color: AppTheme.primaryNeon,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              "VIT CDC attached a shortlist Excel sheet. Open the email in Gmail to view or download it.",
-                              style: TextStyle(
-                                color: AppTheme.textSecondary,
-                                fontSize: 12,
-                                height: 1.3,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-              ],
-
-              // Open in Gmail Button
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 54),
-                ),
-                icon: const Icon(Icons.mail_outline, color: Colors.black),
-                label: const Text("Open Original Email in Gmail"),
-                onPressed: () => _openGmailMessage(context),
               ),
               const SizedBox(height: 32),
             ],
@@ -220,59 +196,60 @@ class DetailScreen extends StatelessWidget {
       label,
       style: const TextStyle(
         color: AppTheme.textSecondary,
-        fontSize: 10,
-        fontWeight: FontWeight.bold,
-        letterSpacing: 1.5,
+        fontSize: 11,
+        fontWeight: FontWeight.w900,
+        letterSpacing: 1.0,
       ),
     );
   }
 
-  // Helper to build 2-column grid items (Inspired by Oura Screen 1)
-  Widget _buildGridItem(BuildContext context, String label, String value, {Color? valueColor}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            color: AppTheme.textSecondary,
-            fontSize: 9,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.0,
+  // Labeled Row widget matching Bauhaus Screen 4
+  Widget _buildDetailRow({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required IconData icon,
+    required Color bgColor,
+  }) {
+    return NeoBox(
+      borderWidth: 2.5,
+      shadowOffset: 0.0,
+      backgroundColor: bgColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: const TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.0,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            color: valueColor ?? AppTheme.textPrimary,
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+          Icon(icon, color: AppTheme.textPrimary, size: 20),
+        ],
+      ),
     );
   }
 
-  Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'offered':
-        return AppTheme.primaryNeon;
-      case 'online test':
-        return AppTheme.secondaryGold;
-      case 'interview':
-        return AppTheme.accentTeal;
-      case 'ppt':
-        return Colors.indigoAccent;
-      case 'shortlisted':
-        return Colors.lightGreenAccent;
-      default:
-        return AppTheme.textSecondary;
-    }
-  }
-
   String _formatDate(DateTime date) {
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    final months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
     return "${date.day} ${months[date.month - 1]} ${date.year}";
   }
 }

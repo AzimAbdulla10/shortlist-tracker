@@ -1,108 +1,141 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // exact hex colors derived from UI screenshots
-  static const Color darkBg = Color(0xFF090B0F); // Very dark screen background
-  static const Color darkSurface = Color(0xFF131722); // Mid dark surface (inputs, list items)
-  static const Color darkCard = Color(0xFF1B202D); // Lighter dark card background
+  // exact hex colors derived from Bauhaus Stitch design
+  static const Color bgCream = Color(0xFFF5F0E8); // Screen background
+  static const Color surfaceWhite = Color(0xFFFFFFFF); // Cards and input fields
+  static const Color borderBlack = Color(0xFF1A1A1A); // Outlines and shadows
   
-  static const Color primaryNeon = Color(0xFF00E5C9); // Active cyan/teal accent
-  static const Color secondaryGold = Color(0xFFFFA500); // Orange/Gold for tests
-  static const Color accentTeal = Color(0xFF00BFFF); // Bright blue/teal
-  static const Color errorRed = Color(0xFFFF453A); // Red warning color
+  static const Color accentYellow = Color(0xFFFFCC00); // Yellow highlight
+  static const Color accentBlue = Color(0xFF0055FF); // Blue tag/button
+  static const Color accentRed = Color(0xFFE63B2E); // Red warning tag
   
-  static const Color textPrimary = Color(0xFFFFFFFF); // Clean white text
-  static const Color textSecondary = Color(0xFF8E9AA8); // Muted slate text
-  static const Color borderMuted = Color(0xFF222634); // Thin card borders
+  static const Color textPrimary = Color(0xFF1A1A1A); // Dark charcoal text
+  static const Color textSecondary = Color(0xFF4A4A4A); // Muted grey text
+  static const Color borderMuted = Color(0xFFD0CBC3); // Subtler outlines if needed
 
-  static ThemeData get darkTheme {
+  static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: darkBg,
-      primaryColor: primaryNeon,
-      colorScheme: const ColorScheme.dark(
-        primary: primaryNeon,
-        secondary: secondaryGold,
-        tertiary: accentTeal,
-        surface: darkSurface,
-        error: errorRed,
-        onPrimary: Colors.black,
+      brightness: Brightness.light,
+      scaffoldBackgroundColor: bgCream,
+      primaryColor: borderBlack,
+      colorScheme: const ColorScheme.light(
+        primary: borderBlack,
+        secondary: accentYellow,
+        tertiary: accentBlue,
+        surface: surfaceWhite,
+        error: accentRed,
+        onPrimary: Colors.white,
         onSurface: textPrimary,
       ),
-      cardTheme: CardThemeData(
-        color: darkCard,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: borderMuted, width: 1),
-        ),
+      // Text theme with Space Grotesk (headings) and Inter (body)
+      textTheme: GoogleFonts.interTextTheme().copyWith(
+        displayLarge: GoogleFonts.spaceGrotesk(fontSize: 40, fontWeight: FontWeight.w800, color: textPrimary, letterSpacing: -0.8),
+        headlineMedium: GoogleFonts.spaceGrotesk(fontSize: 28, fontWeight: FontWeight.bold, color: textPrimary),
+        titleLarge: GoogleFonts.spaceGrotesk(fontSize: 20, fontWeight: FontWeight.bold, color: textPrimary),
+        bodyLarge: GoogleFonts.inter(fontSize: 16, color: textPrimary, height: 1.4),
+        bodyMedium: GoogleFonts.inter(fontSize: 14, color: textSecondary, height: 1.4),
+        labelLarge: GoogleFonts.spaceGrotesk(fontSize: 12, fontWeight: FontWeight.bold, color: textPrimary, letterSpacing: 0.5),
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: textPrimary),
-        headlineMedium: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: textPrimary),
-        titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: textPrimary),
-        bodyLarge: TextStyle(fontSize: 16, color: textPrimary, height: 1.5),
-        bodyMedium: TextStyle(fontSize: 14, color: textSecondary, height: 1.4),
-        labelLarge: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: primaryNeon),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: darkBg,
+      appBarTheme: AppBarTheme(
+        backgroundColor: bgCream,
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textPrimary),
-        iconTheme: IconThemeData(color: textPrimary),
+        titleTextStyle: GoogleFonts.spaceGrotesk(fontSize: 20, fontWeight: FontWeight.w900, color: textPrimary),
+        iconTheme: const IconThemeData(color: textPrimary),
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white, // Solid white background (like the 'Save' button in Screen 2)
-          foregroundColor: Colors.black, // Black text
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Pill button shape
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          elevation: 0,
-        ),
+    );
+  }
+
+  // Alias for compatibility to avoid refactoring main.dart
+  static ThemeData get darkTheme => lightTheme;
+}
+
+// Custom Bauhaus/Neo-Brutalist Box Container
+class NeoBox extends StatelessWidget {
+  final Widget child;
+  final Color backgroundColor;
+  final Color shadowColor;
+  final double borderWidth;
+  final double shadowOffset;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final double? width;
+  final double? height;
+  final AlignmentGeometry? alignment;
+
+  const NeoBox({
+    super.key,
+    required this.child,
+    this.backgroundColor = Colors.white,
+    this.shadowColor = AppTheme.borderBlack,
+    this.borderWidth = 3.0,
+    this.shadowOffset = 4.0,
+    this.padding,
+    this.margin,
+    this.width,
+    this.height,
+    this.alignment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      margin: margin,
+      padding: padding,
+      alignment: alignment,
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        border: Border.all(color: AppTheme.borderBlack, width: borderWidth),
+        boxShadow: shadowOffset > 0
+            ? [
+                BoxShadow(
+                  color: shadowColor,
+                  offset: Offset(shadowOffset, shadowOffset),
+                  blurRadius: 0,
+                  spreadRadius: 0,
+                ),
+              ]
+            : null,
       ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: Colors.white, // Outlined white (like the 'Pause' button in Screen 3)
-          side: const BorderSide(color: Color(0xFF3A4257), width: 1.5),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)), // Pill shape
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: primaryNeon,
-          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        filled: true,
-        fillColor: darkSurface,
-        hintStyle: const TextStyle(color: textSecondary, fontSize: 14),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30), // Highly rounded like the Screen 1 inputs
-          borderSide: const BorderSide(color: borderMuted),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: borderMuted),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: primaryNeon, width: 1.5),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: errorRed),
-        ),
-      ),
-      dividerTheme: const DividerThemeData(
-        color: borderMuted,
-        thickness: 1,
+      child: child,
+    );
+  }
+}
+
+// Custom Bauhaus/Neo-Brutalist Action Button
+class NeoButton extends StatelessWidget {
+  final Widget child;
+  final Color backgroundColor;
+  final VoidCallback? onTap;
+  final double shadowOffset;
+  final double borderWidth;
+  final EdgeInsetsGeometry? padding;
+
+  const NeoButton({
+    super.key,
+    required this.child,
+    this.backgroundColor = AppTheme.accentYellow,
+    this.onTap,
+    this.shadowOffset = 4.0,
+    this.borderWidth = 3.0,
+    this.padding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: NeoBox(
+        backgroundColor: backgroundColor,
+        shadowOffset: onTap != null ? shadowOffset : 0.0,
+        borderWidth: borderWidth,
+        padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: child,
       ),
     );
   }

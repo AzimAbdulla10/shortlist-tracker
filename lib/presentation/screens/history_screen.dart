@@ -26,7 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget build(BuildContext context) {
     final provider = Provider.of<PlacementProvider>(context);
 
-    // Filter updates based on search query
+    // Filter updates by query
     final filteredUpdates = provider.updates.where((update) {
       final query = _searchQuery.toLowerCase();
       return update.companyName.toLowerCase().contains(query) ||
@@ -35,50 +35,115 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }).toList();
 
     return Scaffold(
+      backgroundColor: AppTheme.bgCream,
       appBar: AppBar(
-        title: const Text("Shortlists History"),
+        title: const Text("PTRACKER"),
       ),
       body: Column(
         children: [
-          // Search Bar
+          // Bauhaus "SHORTLISTS HISTORY" title with yellow highlighted box
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                hintText: "Search company, subject...",
-                prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondary),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear, color: AppTheme.textSecondary),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
-              ),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+            child: Row(
+              children: [
+                const Text(
+                  "SHORTLISTS ",
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: AppTheme.textPrimary,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                NeoBox(
+                  borderWidth: 2.0,
+                  shadowOffset: 0.0,
+                  backgroundColor: AppTheme.accentYellow,
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  child: const Text(
+                    "HISTORY",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: AppTheme.textPrimary,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          
+
+          // Search Archive Bar (Bauhaus Style with yellow search button)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppTheme.surfaceWhite,
+                      border: Border.all(color: AppTheme.borderBlack, width: 2.5),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
+                      style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary),
+                      decoration: const InputDecoration(
+                        hintText: "Search archive...",
+                        hintStyle: TextStyle(color: AppTheme.textSecondary, fontWeight: FontWeight.bold),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
+                ),
+                // Search trailing block
+                GestureDetector(
+                  onTap: () {
+                    // Triggers search
+                  },
+                  child: Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: AppTheme.accentYellow,
+                      border: Border.all(color: AppTheme.borderBlack, width: 2.5),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: AppTheme.borderBlack,
+                          offset: Offset(2, 2),
+                          blurRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: const Icon(Icons.search, color: AppTheme.textPrimary),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
           // History List
           Expanded(
             child: filteredUpdates.isEmpty
                 ? _buildEmptyState()
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
                     itemCount: filteredUpdates.length,
                     itemBuilder: (context, index) {
                       final update = filteredUpdates[index];
                       return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
+                        padding: const EdgeInsets.only(bottom: 16.0),
                         child: _buildHistoryCard(context, update),
                       );
                     },
@@ -101,36 +166,31 @@ class _HistoryScreenState extends State<HistoryScreen> {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
+      child: NeoBox(
+        borderWidth: 2.5,
+        shadowOffset: 4.0,
+        backgroundColor: AppTheme.surfaceWhite,
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppTheme.darkSurface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppTheme.borderMuted, width: 1),
-        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Status indicator circle
+            // Checked/Indicator Box on Left (Neo-brutalist status selector mock)
             Container(
               margin: const EdgeInsets.only(top: 4),
-              width: 12,
-              height: 12,
+              width: 18,
+              height: 18,
               decoration: BoxDecoration(
-                color: badgeColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: badgeColor.withOpacity(0.4),
-                    blurRadius: 6,
-                    spreadRadius: 1,
-                  )
-                ]
+                color: badgeColor.withOpacity(0.15),
+                border: Border.all(color: AppTheme.borderBlack, width: 2.0),
+              ),
+              child: Icon(
+                Icons.check,
+                size: 12,
+                color: AppTheme.borderBlack.withOpacity(0.8),
               ),
             ),
             const SizedBox(width: 16),
-            
+
             // Content
             Expanded(
               child: Column(
@@ -141,41 +201,55 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          update.companyName,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          update.companyName.toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w900,
+                            color: AppTheme.textPrimary,
+                            letterSpacing: 0.5,
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        _formatDate(update.dateReceived),
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 12,
-                              color: AppTheme.textSecondary,
-                            ),
+                      // Flag/Date tag
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppTheme.borderBlack,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          _formatDate(update.dateReceived).toUpperCase(),
+                          style: const TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 6),
                   Text(
                     update.emailSubject,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: AppTheme.textPrimary,
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Text(
                     update.snippet,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontSize: 13,
-                        ),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppTheme.textSecondary,
+                      height: 1.4,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -183,14 +257,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Icon(Icons.table_chart_outlined, color: AppTheme.primaryNeon.withOpacity(0.8), size: 14),
-                        const SizedBox(width: 4),
+                        const Icon(Icons.table_chart, color: AppTheme.textPrimary, size: 14),
+                        const SizedBox(width: 6),
                         Text(
-                          "Excel spreadsheet attached",
+                          "EXCEL SHORTLIST ATTACHED",
                           style: TextStyle(
-                            color: AppTheme.primaryNeon.withOpacity(0.8),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            color: AppTheme.textPrimary.withOpacity(0.8),
+                            fontSize: 9,
+                            fontWeight: FontWeight.w900,
                           ),
                         )
                       ],
@@ -208,31 +282,32 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(40.0),
+        padding: const EdgeInsets.all(32.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.search_off_outlined,
+              Icons.search_off,
               size: 48,
-              color: AppTheme.borderMuted,
+              color: AppTheme.textSecondary,
             ),
             const SizedBox(height: 16),
             const Text(
-              "No Results Found",
+              "NO SEARCH RESULTS",
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
                 color: AppTheme.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              "Try searching with another company name or check your sync status.",
+              "We couldn't find any placement updates matching your query. Try clearing or editing the search bar.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 12,
                 color: AppTheme.textSecondary,
+                height: 1.4,
               ),
             ),
           ],
@@ -244,15 +319,15 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'offered':
-        return AppTheme.primaryNeon;
+        return AppTheme.accentYellow;
       case 'online test':
-        return AppTheme.secondaryGold;
+        return AppTheme.accentRed;
       case 'interview':
-        return AppTheme.accentTeal;
+        return AppTheme.accentBlue;
       case 'ppt':
-        return Colors.indigoAccent;
+        return Colors.purple;
       case 'shortlisted':
-        return Colors.lightGreenAccent;
+        return Colors.green;
       default:
         return AppTheme.textSecondary;
     }

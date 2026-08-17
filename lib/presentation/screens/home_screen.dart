@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/services/placement_provider.dart';
@@ -21,25 +20,26 @@ class HomeScreen extends StatelessWidget {
         : "Never";
 
     return Scaffold(
+      backgroundColor: AppTheme.bgCream,
       appBar: AppBar(
-        title: const Text("Ptracker"),
+        title: const Text("PTRACKER"),
         actions: [
           IconButton(
             icon: provider.isSyncing
                 ? const SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primaryNeon),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.borderBlack),
                   )
-                : const Icon(Icons.refresh),
+                : const Icon(Icons.sync, color: AppTheme.borderBlack),
             onPressed: provider.isSyncing ? null : () => provider.syncData(),
           ),
         ],
       ),
       body: RefreshIndicator(
         onRefresh: () => provider.syncData(),
-        color: AppTheme.primaryNeon,
-        backgroundColor: AppTheme.darkSurface,
+        color: AppTheme.borderBlack,
+        backgroundColor: AppTheme.bgCream,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Padding(
@@ -47,74 +47,64 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Top Header label
-                Center(
-                  child: Text(
-                    "TOTAL SHORTLISTS",
-                    style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-
-                // Large Heart-Rate style Circular Dashboard (Screen 3 style)
-                CircularDashboard(
+                // Bauhaus Square Tracker Box (Screen 2)
+                BauhausDashboard(
                   totalShortlists: provider.updates.length,
-                  statusText: provider.isSyncing ? "Syncing..." : "Monitoring",
+                  statusText: provider.isSyncing ? "Syncing..." : "STATUS: MONITORING ACTIVE",
                   subText: "Last Synced: $lastSyncText",
                   isSyncing: provider.isSyncing,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 36),
 
-                // Horizontal quick actions (inspired by Revolut Business/Stitch Home Overview)
+                // Horizontal Quick Actions (Bauhaus style)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildQuickAction(
                       context: context,
                       icon: Icons.sync,
-                      label: "Sync Now",
+                      label: "Sync",
                       onTap: provider.isSyncing ? null : () => provider.syncData(),
                     ),
-                    const SizedBox(width: 32),
+                    _buildQuickAction(
+                      context: context,
+                      icon: Icons.filter_list,
+                      label: "Filter",
+                      onTap: () {
+                        // Toggle filters (or open sheet)
+                      },
+                    ),
                     _buildQuickAction(
                       context: context,
                       icon: Icons.history,
                       label: "History",
                       onTap: () => provider.setTabIndex(1),
                     ),
-                    const SizedBox(width: 32),
                     _buildQuickAction(
                       context: context,
-                      icon: Icons.settings_rounded,
+                      icon: Icons.settings,
                       label: "Settings",
                       onTap: () => provider.setTabIndex(2),
                     ),
                   ],
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 36),
 
-                // Status Banner or Error message
+                // Error Message banner if any
                 if (provider.errorMessage != null) ...[
-                  Container(
+                  NeoBox(
+                    borderWidth: 2.5,
+                    shadowOffset: 3.0,
+                    backgroundColor: AppTheme.accentRed.withOpacity(0.08),
                     padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppTheme.errorRed.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppTheme.errorRed.withOpacity(0.2), width: 1),
-                    ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: AppTheme.errorRed, size: 20),
+                        const Icon(Icons.error_outline, color: AppTheme.accentRed, size: 20),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
                             provider.errorMessage!,
-                            style: const TextStyle(color: AppTheme.errorRed, fontSize: 13, fontWeight: FontWeight.bold),
+                            style: const TextStyle(color: AppTheme.textPrimary, fontSize: 13, fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -123,35 +113,51 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 24),
                 ],
 
-                // Latest Alert Banner
+                // Latest Shortlists Header
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Latest shortlists",
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.2,
-                          ),
+                    const Text(
+                      "LATEST SHORTLISTS",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 0.5,
+                        color: AppTheme.textPrimary,
+                      ),
                     ),
                     if (provider.updates.isNotEmpty)
-                      Text(
-                        "1 of ${provider.updates.length}",
-                        style: TextStyle(color: AppTheme.textSecondary, fontSize: 12),
+                      GestureDetector(
+                        onTap: () => provider.setTabIndex(1),
+                        child: const Text(
+                          "VIEW ALL",
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w900,
+                            color: AppTheme.accentBlue,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 2.0,
+                          ),
+                        ),
                       ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
 
-                if (latest != null)
-                  _buildLatestUpdateCard(context, latest)
-                else
+                if (latest != null) ...[
+                  _buildLatestUpdateCard(context, latest),
+                  if (provider.updates.length > 1) ...[
+                    const SizedBox(height: 16),
+                    _buildLatestUpdateCard(context, provider.updates[1]),
+                  ]
+                ] else
                   _buildEmptyState(context, provider),
-                
-                const SizedBox(height: 24),
 
-                // Background service tip card (Pill styled like Screen tips)
+                const SizedBox(height: 24),
+                
+                // Tip info card
                 _buildTipCard(context),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -172,14 +178,11 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
+      child: NeoBox(
+        borderWidth: 3.0,
+        shadowOffset: 4.0,
+        backgroundColor: AppTheme.surfaceWhite,
         padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppTheme.darkCard,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppTheme.borderMuted, width: 1),
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -188,30 +191,31 @@ class HomeScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    update.companyName,
+                    update.companyName.toUpperCase(),
                     style: const TextStyle(
                       color: AppTheme.textPrimary,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.5,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 const SizedBox(width: 8),
+                // Status badge
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: badgeColor.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: badgeColor.withOpacity(0.3), width: 1),
+                    color: badgeColor,
+                    border: Border.all(color: AppTheme.borderBlack, width: 2.0),
                   ),
                   child: Text(
                     update.status.toUpperCase(),
-                    style: TextStyle(
-                      color: badgeColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w900,
                       letterSpacing: 0.5,
                     ),
                   ),
@@ -222,9 +226,10 @@ class HomeScreen extends StatelessWidget {
             Text(
               update.emailSubject,
               style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
                 color: AppTheme.textPrimary,
+                height: 1.3,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -233,7 +238,7 @@ class HomeScreen extends StatelessWidget {
             Text(
               update.snippet,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 color: AppTheme.textSecondary,
                 height: 1.4,
               ),
@@ -241,24 +246,35 @@ class HomeScreen extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 16),
+            // Custom Separator (brutalist dash/border)
+            Container(
+              height: 2.0,
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: AppTheme.borderBlack, width: 1.5, style: BorderStyle.solid),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  _formatDate(update.dateReceived),
+                  _formatDate(update.dateReceived).toUpperCase(),
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w900,
                     color: AppTheme.textSecondary,
                   ),
                 ),
                 if (update.hasExcelAttachment)
                   Row(
                     children: [
-                      Icon(Icons.table_chart_outlined, color: AppTheme.primaryNeon.withOpacity(0.8), size: 14),
-                      const SizedBox(width: 4),
+                      const Icon(Icons.table_chart, color: AppTheme.textPrimary, size: 14),
+                      const SizedBox(width: 6),
                       Text(
-                        "Excel Shortlist",
-                        style: TextStyle(color: AppTheme.primaryNeon.withOpacity(0.8), fontSize: 11, fontWeight: FontWeight.bold),
+                        "1 ATTACHMENT",
+                        style: TextStyle(color: AppTheme.textPrimary.withOpacity(0.8), fontSize: 10, fontWeight: FontWeight.w900),
                       )
                     ],
                   ),
@@ -271,26 +287,24 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, PlacementProvider provider) {
-    return Container(
+    return NeoBox(
+      borderWidth: 3.0,
+      shadowOffset: 4.0,
+      backgroundColor: AppTheme.surfaceWhite,
       padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 20),
-      decoration: BoxDecoration(
-        color: AppTheme.darkCard,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderMuted, width: 1),
-      ),
       child: Column(
         children: [
           const Icon(
             Icons.inbox_outlined,
-            size: 40,
+            size: 44,
             color: AppTheme.textSecondary,
           ),
           const SizedBox(height: 16),
           const Text(
-            "No Placements Found",
+            "NO PLACEMENTS FOUND",
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
               color: AppTheme.textPrimary,
             ),
           ),
@@ -299,15 +313,18 @@ class HomeScreen extends StatelessWidget {
             "No placement shortlisting emails matching your details were found in your inbox.",
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               color: AppTheme.textSecondary,
               height: 1.4,
             ),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: provider.isSyncing ? null : () => provider.syncData(),
-            child: const Text("Perform Sync"),
+          NeoButton(
+            onTap: provider.isSyncing ? null : () => provider.syncData(),
+            child: const Text(
+              "SYNC NOW",
+              style: TextStyle(fontWeight: FontWeight.w900, fontSize: 13),
+            ),
           )
         ],
       ),
@@ -315,35 +332,33 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildTipCard(BuildContext context) {
-    return Container(
+    return NeoBox(
+      borderWidth: 2.5,
+      shadowOffset: 0.0,
+      backgroundColor: AppTheme.surfaceWhite,
       padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: AppTheme.darkSurface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppTheme.borderMuted, width: 1),
-      ),
       child: const Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.flash_on, color: AppTheme.primaryNeon, size: 20),
+          Icon(Icons.flash_on, color: AppTheme.accentYellow, size: 20),
           SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Background Fetching Active",
+                  "BACKGROUND ACTIVE",
                   style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w900,
                     color: AppTheme.textPrimary,
                   ),
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "To receive instant shortlist alerts, ensure battery optimization is set to Unrestricted in your system settings.",
+                  "Ptracker monitors your emails every 15 mins in the background. Keep your internet enabled for alerts.",
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: AppTheme.textSecondary,
                     height: 1.4,
                   ),
@@ -363,32 +378,30 @@ class HomeScreen extends StatelessWidget {
     required VoidCallback? onTap,
   }) {
     final isEnabled = onTap != null;
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(30),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: AppTheme.darkSurface,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppTheme.borderMuted, width: 1),
-            ),
+          NeoBox(
+            width: 64,
+            height: 64,
+            borderWidth: 2.5,
+            shadowOffset: isEnabled ? 3.0 : 0.0,
+            backgroundColor: AppTheme.surfaceWhite,
             child: Icon(
               icon,
-              color: isEnabled ? AppTheme.textPrimary : AppTheme.textSecondary.withOpacity(0.5),
+              color: AppTheme.textPrimary,
+              size: 24,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            label,
+            label.toUpperCase(),
             style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: isEnabled ? AppTheme.textSecondary : AppTheme.textSecondary.withOpacity(0.5),
+              fontSize: 10,
+              fontWeight: FontWeight.w900,
+              color: isEnabled ? AppTheme.textPrimary : AppTheme.textSecondary,
             ),
           ),
         ],
@@ -399,15 +412,15 @@ class HomeScreen extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'offered':
-        return AppTheme.primaryNeon;
+        return AppTheme.accentYellow;
       case 'online test':
-        return AppTheme.secondaryGold;
+        return AppTheme.accentRed;
       case 'interview':
-        return AppTheme.accentTeal;
+        return AppTheme.accentBlue;
       case 'ppt':
-        return Colors.indigoAccent;
+        return Colors.purple;
       case 'shortlisted':
-        return Colors.lightGreenAccent;
+        return Colors.green;
       default:
         return AppTheme.textSecondary;
     }
@@ -415,18 +428,18 @@ class HomeScreen extends StatelessWidget {
 
   String _formatDate(DateTime date) {
     final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return "${date.day} ${months[date.month - 1]} ${date.year} • ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+    return "${date.day} ${months[date.month - 1]} ${date.year}";
   }
 }
 
-// Custom gauge style widget matching Screen 3 layout
-class CircularDashboard extends StatelessWidget {
+// Custom Bauhaus Dashboard Block Widget
+class BauhausDashboard extends StatelessWidget {
   final int totalShortlists;
   final String statusText;
   final String subText;
   final bool isSyncing;
 
-  const CircularDashboard({
+  const BauhausDashboard({
     super.key,
     required this.totalShortlists,
     required this.statusText,
@@ -437,138 +450,85 @@ class CircularDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: 240,
-        height: 220,
-        child: Stack(
-          alignment: Alignment.center,
+      child: NeoBox(
+        width: 250,
+        height: 210,
+        borderWidth: 3.5,
+        shadowOffset: 6.0,
+        backgroundColor: AppTheme.surfaceWhite,
+        child: Column(
           children: [
-            CustomPaint(
-              size: const Size(240, 220),
-              painter: GaugePainter(isSyncing: isSyncing),
+            // Status bar at top
+            NeoBox(
+              width: double.infinity,
+              height: 38,
+              borderWidth: 0.0,
+              shadowOffset: 0.0,
+              backgroundColor: AppTheme.accentYellow,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: AppTheme.borderBlack,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    statusText.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 10,
+                      letterSpacing: 0.5,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 16),
-                // Indicator status (ZONE 3 style)
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryNeon.withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppTheme.primaryNeon.withOpacity(0.3), width: 1),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primaryNeon,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        statusText.toUpperCase(),
-                        style: const TextStyle(
-                          color: AppTheme.primaryNeon,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.0,
-                        ),
-                      ),
-                    ],
-                  ),
+            Container(height: 3.0, color: AppTheme.borderBlack),
+            const Spacer(),
+            // Big counter number
+            Text(
+              "$totalShortlists",
+              style: const TextStyle(
+                fontSize: 76,
+                fontWeight: FontWeight.w900,
+                color: AppTheme.textPrimary,
+                height: 1.0,
+              ),
+            ),
+            const SizedBox(height: 2),
+            const Text(
+              "ACTIVE TRACKERS",
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w900,
+                color: AppTheme.textPrimary,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const Spacer(),
+            // Timestamp
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Text(
+                subText.toUpperCase(),
+                style: const TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontSize: 8,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 0.5,
                 ),
-                const SizedBox(height: 8),
-                // Large statistic number
-                Text(
-                  "$totalShortlists",
-                  style: const TextStyle(
-                    fontSize: 76,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.white,
-                    height: 1.0,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                // Subtitle
-                Text(
-                  subText.toUpperCase(),
-                  style: const TextStyle(
-                    color: AppTheme.textSecondary,
-                    fontSize: 9,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                  ),
-                ),
-              ],
-            )
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-}
-
-// Custom Painter to draw Screen 3's circular progress arc
-class GaugePainter extends CustomPainter {
-  final bool isSyncing;
-
-  GaugePainter({required this.isSyncing});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2 - 5);
-    final radius = size.width / 2 - 16;
-
-    final basePaint = Paint()
-      ..color = const Color(0xFF1B202D) // Dark blue-grey base arc
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round;
-
-    final progressPaint = Paint()
-      ..color = AppTheme.primaryNeon // Clean cyan active arc
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 5
-      ..strokeCap = StrokeCap.round;
-
-    // Start angle is at 135 degrees (2.35 rad) and sweeps 270 degrees (4.71 rad)
-    const double startAngle = 2.35;
-    const double sweepAngle = 4.71;
-
-    // Base Arc
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      basePaint,
-    );
-
-    // Active progress arc
-    final double progressPct = isSyncing ? 0.9 : 0.65;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle * progressPct,
-      false,
-      progressPaint,
-    );
-
-    // Indicator dot
-    final double endAngle = startAngle + (sweepAngle * progressPct);
-    final double dotX = center.dx + radius * cos(endAngle);
-    final double dotY = center.dy + radius * sin(endAngle);
-
-    final dotPaint = Paint()..color = Colors.white;
-    canvas.drawCircle(Offset(dotX, dotY), 5, dotPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

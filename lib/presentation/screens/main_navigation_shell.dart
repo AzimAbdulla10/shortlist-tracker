@@ -56,45 +56,51 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
   Widget _buildNavItem(PlacementProvider provider, int index, IconData outlineIcon, IconData filledIcon, String label) {
     final isSelected = provider.currentTabIndex == index;
-    return GestureDetector(
-      onTap: () => provider.setTabIndex(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: isSelected
-            ? BoxDecoration(
-                color: AppTheme.accentYellow,
-                border: Border.all(color: AppTheme.borderBlack, width: 2.5),
-                boxShadow: const [
-                  BoxShadow(
-                    color: AppTheme.borderBlack,
-                    offset: Offset(2, 2),
-                    blurRadius: 0,
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => provider.setTabIndex(index),
+        child: Container(
+          alignment: Alignment.center,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: isSelected
+                ? BoxDecoration(
+                    color: AppTheme.accentYellow,
+                    border: Border.all(color: AppTheme.borderBlack, width: 2.5),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: AppTheme.borderBlack,
+                        offset: Offset(2, 2),
+                        blurRadius: 0,
+                      )
+                    ],
                   )
-                ],
-              )
-            : null,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              isSelected ? filledIcon : outlineIcon,
-              color: AppTheme.textPrimary,
-              size: 20,
-            ),
-            if (isSelected) ...[
-              const SizedBox(width: 8),
-              Text(
-                label.toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 11,
-                  letterSpacing: 0.5,
+                : null,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  isSelected ? filledIcon : outlineIcon,
                   color: AppTheme.textPrimary,
+                  size: 20,
                 ),
-              ),
-            ]
-          ],
+                if (isSelected) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    label.toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 11,
+                      letterSpacing: 0.5,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                ]
+              ],
+            ),
+          ),
         ),
       ),
     );

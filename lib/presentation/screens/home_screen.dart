@@ -504,7 +504,7 @@ class BauhausDashboard extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             const Text(
-              "ACTIVE TRACKERS",
+              "SHORTLISTS",
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w900,

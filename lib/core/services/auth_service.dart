@@ -122,4 +122,28 @@ class AuthService extends ChangeNotifier {
     await _secureStorage.write(key: AppConstants.keyCdcSender, value: sender);
     notifyListeners();
   }
+
+  // Helper to read custom role
+  Future<String> getCustomRole() async {
+    final value = await _secureStorage.read(key: AppConstants.keyCustomRole);
+    return value ?? "Senior Tracking Engineer";
+  }
+
+  // Helper to write custom role
+  Future<void> setCustomRole(String role) async {
+    await _secureStorage.write(key: AppConstants.keyCustomRole, value: role);
+    notifyListeners();
+  }
+
+  // Helper to read custom client ID
+  Future<String> getCustomClientId() async {
+    final value = await _secureStorage.read(key: AppConstants.keyCustomClientId);
+    return value ?? "PT-8492-X";
+  }
+
+  // Helper to write custom client ID
+  Future<void> setCustomClientId(String id) async {
+    await _secureStorage.write(key: AppConstants.keyCustomClientId, value: id);
+    notifyListeners();
+  }
 }

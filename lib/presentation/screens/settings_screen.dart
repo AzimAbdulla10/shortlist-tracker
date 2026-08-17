@@ -17,6 +17,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _cdcEmailController;
   bool _isSaving = false;
   
+  // Customizable profile card properties
+  String _customRole = "Senior Tracking Engineer";
+  String _customClientId = "PT-8492-X";
+
   // Custom Settings checkboxes (Visual parity with Screen 5)
   bool _verboseLogging = false;
   bool _autoSync = true;
@@ -33,9 +37,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final authService = Provider.of<AuthService>(context, listen: false);
     final placementId = await authService.getPlacementId();
     final cdcEmail = await authService.getCdcSender();
+    final role = await authService.getCustomRole();
+    final clientId = await authService.getCustomClientId();
     setState(() {
       _placementIdController.text = placementId;
       _cdcEmailController.text = cdcEmail;
+      _customRole = role;
+      _customClientId = clientId;
     });
   }
 
@@ -86,6 +94,96 @@ class _SettingsScreenState extends State<SettingsScreen> {
         setState(() {
           _isSaving = false;
         });
+      }
+    }
+  }
+
+  Future<void> _showEditProfileDialog(BuildContext context, AuthService auth) async {
+    final roleController = TextEditingController(text: _customRole);
+    final clientIdController = TextEditingController(text: _customClientId);
+    final formKey = GlobalKey<FormState>();
+
+    final updated = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.surfaceWhite,
+        shape: Border.all(color: AppTheme.borderBlack, width: 3),
+        title: const Text("EDIT PROFILE DETAILS", style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16)),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("CUSTOM ROLE", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 6),
+              TextFormField(
+                controller: roleController,
+                validator: (value) => value == null || value.trim().isEmpty ? "Role cannot be empty" : null,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary),
+                decoration: const InputDecoration(
+                  hintText: "E.g. Student",
+                  filled: true,
+                  fillColor: AppTheme.bgCream,
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.0), borderRadius: BorderRadius.zero),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.0), borderRadius: BorderRadius.zero),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text("CLIENT DEVICE ID", style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900)),
+              const SizedBox(height: 6),
+              TextFormField(
+                controller: clientIdController,
+                validator: (value) => value == null || value.trim().isEmpty ? "Device ID cannot be empty" : null,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.textPrimary),
+                decoration: const InputDecoration(
+                  hintText: "E.g. PT-8492-X",
+                  filled: true,
+                  fillColor: AppTheme.bgCream,
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.0), borderRadius: BorderRadius.zero),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: AppTheme.borderBlack, width: 2.0), borderRadius: BorderRadius.zero),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("CANCEL", style: TextStyle(color: AppTheme.textSecondary, fontWeight: FontWeight.bold)),
+          ),
+          NeoButton(
+            backgroundColor: AppTheme.accentYellow,
+            shadowOffset: 0,
+            borderWidth: 2,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            onTap: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(context, true);
+              }
+            },
+            child: const Text("SAVE", style: TextStyle(color: AppTheme.textPrimary, fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+        ],
+      ),
+    );
+
+    if (updated == true) {
+      final role = roleController.text.trim();
+      final clientId = clientIdController.text.trim();
+      await auth.setCustomRole(role);
+      await auth.setCustomClientId(clientId);
+      setState(() {
+        _customRole = role;
+        _customClientId = clientId;
+      });
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Profile details updated successfully!"),
+            backgroundColor: AppTheme.accentYellow,
+          ),
+        );
       }
     }
   }
@@ -178,9 +276,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4),
-                      const Text(
-                        "Senior Tracking Engineer",
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                      Text(
+                        _customRole,
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 8),
@@ -189,16 +287,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
                         textAlign: TextAlign.center,
                       ),
+                      const SizedBox(height: 6),
+                      Text(
+                        "ID: $_customClientId",
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppTheme.textSecondary),
+                        textAlign: TextAlign.center,
+                      ),
                       const SizedBox(height: 16),
-                      // Black Edit Profile button
+                      // Black Edit Profile button (fully interactive now!)
                       NeoButton(
                         backgroundColor: AppTheme.borderBlack,
                         shadowOffset: 0.0,
                         borderWidth: 0.0,
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                        onTap: () {
-                          // Mock profile editing trigger
-                        },
+                        onTap: () => _showEditProfileDialog(context, authService),
                         child: const Text(
                           "EDIT PROFILE",
                           style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900),

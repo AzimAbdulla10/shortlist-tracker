@@ -7,6 +7,8 @@ class AppConstants {
   static const String keyPlacementId = 'placement_id';
   static const String keyCdcSender = 'cdc_sender';
   static const String keyUserEmail = 'user_email';
+  static const String keyCustomRole = 'custom_role';
+  static const String keyCustomClientId = 'custom_client_id';
 
   // Gmail API scopes
   static const List<String> gmailScopes = [
